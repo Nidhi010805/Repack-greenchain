@@ -1,22 +1,26 @@
-// client/src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import UserNavbar from './components/Navbar/UserNavbar';
+import RetailerNavbar from './components/Navbar/RetailerNavbar';
+import PublicNavbar from './components/Navbar/PublicNavbar';
 import Footer from './components/Footer';
-
 
 // Pages
 import Home from './pages/Home';
-import ScanReturn from './pages/ScanReturn';
 import UserDashboard from './pages/UserDashboard';
 import RetailerDashboard from './pages/RetailerDashboard';
 import AdminPanel from './pages/AdminPanel';
 import SmartSuggest from './pages/SmartSuggest';
 import Login from './pages/Login';
-import Products from "./pages/Products";
+import ProductList from "./pages/ProductList";
 import Signup from './pages/Signup';
 import NotFound from './pages/NotFound';
 import Cart from './pages/Cart';
 import MyReturns from './pages/MyReturns';
+import UserSettings from "./pages/UserSettings";
+import MyOrders from "./pages/MyOrders";
+import Likes from "./pages/Likes";
+import InitiateReturn from "./pages/InitiateReturn";
+import Rewards from "./pages/Rewards";
 
 // Footer linked pages
 import About from './pages/About';
@@ -24,32 +28,47 @@ import Mission from './pages/Mission';
 import Careers from './pages/Careers';
 import Blog from './pages/Blog';
 import Help from './pages/Help';
-
 import Faq from './pages/Faq';
 import Shipping from './pages/Shipping';
 
 function App() {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
+
+        {/* Navbar Switch */}
+        {token && role === "user" && <UserNavbar />}
+        {token && role === "retailer" && <RetailerNavbar />}
+        {!token && <PublicNavbar />}
+
+        <main className="flex-grow mt-20"> {/* Added margin for fixed navbar space */}
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/scan-return" element={<ScanReturn />} />
+            
+            {/* User Routes */}
             <Route path="/user/dashboard" element={<UserDashboard />} />
-             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
+            <Route path="/user/settings" element={<UserSettings />} />
+            <Route path="/my-orders" element={<MyOrders />} />
+            <Route path="/likes" element={<Likes />} />
+            <Route path="/my-returns" element={<MyReturns />} />
+            <Route path="/initiate-return" element={<InitiateReturn />} />
+            <Route path="/my-rewards" element={<Rewards />} />
+
+            {/* Retailer Routes */}
+            <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
+
+            {/* Common Pages */}
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/smart-suggest" element={<SmartSuggest />} />
-          
-             <Route path="/my-returns" element={<MyReturns />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/products" element={<Products />} />
+            <Route path="/products" element={<ProductList />} />
             <Route path="/cart" element={<Cart />} />
 
-
-            {/* Footer pages */}
+            {/* Footer Pages */}
             <Route path="/about" element={<About />} />
             <Route path="/mission" element={<Mission />} />
             <Route path="/careers" element={<Careers />} />
@@ -61,6 +80,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
+
         <Footer />
       </div>
     </Router>

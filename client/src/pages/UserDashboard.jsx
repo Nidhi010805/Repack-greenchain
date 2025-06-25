@@ -33,9 +33,20 @@ export default function UserDashboard() {
     );
   }
 
+  const profileImg = user.profilePhoto
+    ? `http://localhost:5000/uploads/${user.profilePhoto}`
+    : "https://via.placeholder.com/100?text=Avatar"; // Default avatar image
+
   return (
     <div className="max-w-5xl mx-auto mt-24 px-4">
-      <h1 className="text-3xl font-bold mb-6 text-green-700">Welcome, {user.name}</h1>
+      <h1 className="text-3xl font-bold mb-6 text-green-700 flex items-center gap-4">
+        <img
+          src={profileImg}
+          alt="Profile"
+          className="w-16 h-16 rounded-full border object-cover"
+        />
+        Welcome, {user.name}
+      </h1>
 
       {/* Account Details */}
       <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -59,8 +70,15 @@ export default function UserDashboard() {
       <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         <Card title="My Orders" desc={`${user.totalOrders || 0} orders placed`} onClick={() => navigate("/my-orders")} />
         <Card title="Returns" desc={`${user.totalReturns || 0} returns processed`} onClick={() => navigate("/my-returns")} />
-        <Card title="Rewards" desc={`${user.greenPoints} points available`} onClick={() => navigate("/my-rewards")} />
+        <Card 
+              title="Rewards" 
+           desc={`${user.greenPoints} points, ₹${user.cashbackEarned} cashback`} 
+              onClick={() => navigate("/my-rewards")} 
+           />
+
         <Card title="Settings" desc="Manage account info" onClick={() => navigate("/user/settings")} />
+          
+
       </div>
 
       {/* Referral & Offers */}

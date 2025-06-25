@@ -1,82 +1,172 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ShoppingCart, Heart } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Heart, ShoppingCart, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function ProductCard({ product }) {
-  const [addedToCart, setAddedToCart] = useState(false);
+export default function ProductCard({ product, showDelete, onDelete }) {
+  const [liked, setLiked] = useState(false);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
-  if (!product) return null;
+  useEffect(() => {
+    if (!token || !product?.id) return;
 
-  const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const isAlreadyInCart = cart.some((item) => item.id === product.id);
-    if (!isAlreadyInCart) {
-      cart.push(product);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      setAddedToCart(true);
+    const fetchLikes = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/likes/my", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const isLiked = res.data.some((like) => like.productId === product.id);
+        setLiked(isLiked);
+      } catch (err) {
+        console.error("Error fetching likes", err);
+      }
+    };
+
+    fetchLikes();
+  }, [product?.id, token]);
+
+  if (!product || !product.id) {
+    return (
+      <div className="p-4 border rounded shadow">
+        <p>Product Data Missing</p>
+      </div>
+    );
+  }
+
+  const handleAddToCart = async () => {
+    if (!token) return alert("Please login first");
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/cart/add",
+        { productId: product.id, quantity: 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      alert("Product added to cart!");
+
+      // Update Cart Icon Count
+      const res = await axios.get("http://localhost:5000/api/cart/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const total = res.data.reduce((sum, item) => sum + item.quantity, 0);
+      localStorage.setItem("cartCount", total);
+      window.dispatchEvent(new Event("cart-updated"));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add to cart");
     }
   };
 
+  const handleBuyNow = async () => {
+    if (!token) return alert("Please login first");
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/order/place",
+        { productId: product.id, quantity: 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.status === 200) {
+        alert("Order placed successfully!");
+        navigate("/my-orders");
+      } else {
+        alert(res.data.message || "Failed to place order");
+      }
+    } catch (err) {
+      console.error("Error placing order", err);
+      alert("Error placing order");
+    }
+  };
+
+  const handleLike = async () => {
+  if (!token) return alert("Please login first");
+
+  try {
+    if (liked) {
+      await axios.delete(`http://localhost:5000/api/likes/remove/${product.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setLiked(false);
+      alert("Removed from Likes");
+
+      // Update localStorage count
+      const res = await axios.get("http://localhost:5000/api/likes/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      localStorage.setItem("likesCount", res.data.length);
+      window.dispatchEvent(new Event("likes-updated"));
+
+    } else {
+      await axios.post(
+        "http://localhost:5000/api/likes/add",
+        { productId: product.id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setLiked(true);
+      alert("Added to Likes");
+
+      // Update localStorage count
+      const res = await axios.get("http://localhost:5000/api/likes/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      localStorage.setItem("likesCount", res.data.length);
+      window.dispatchEvent(new Event("likes-updated"));
+    }
+  } catch (err) {
+    console.error("Error updating Likes", err);
+    alert("Error updating Likes");
+  }
+};
+
   return (
-    <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition duration-300 dark:bg-gray-800">
+    <div className="border rounded-2xl shadow hover:shadow-lg transition p-4 flex flex-col justify-between h-full bg-white">
       <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-48 object-cover"
+        src={product.imageUrl || ""}
+        alt={product.name || "Product"}
+        className="h-40 w-full object-contain mb-3"
       />
-      <div className="p-4">
-        <h2 className="text-xl font-semibold text-green-700 dark:text-green-300 mb-1">
-          {product.name}
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{product.brand}</p>
-        <p className="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-2">
-          {product.description}
-        </p>
-        <p className="text-green-800 dark:text-green-400 font-bold text-lg mb-3">
-          {product.price}
-        </p>
 
-        <div className="flex justify-between items-center">
-          <a
-            href={product.merchantUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition"
-          >
-            Buy Now
-          </a>
+      <h2 className="text-lg font-semibold text-gray-800">{product.name || "Unnamed Product"}</h2>
+      <p className="text-gray-500 text-sm mb-1">{product.category || "No Category"}</p>
+      <p className="text-gray-600 text-sm mb-3 line-clamp-3">{product.description || "No Description"}</p>
 
-          <Link
-            to="/scan-return"
-            state={{ initialProduct: product.id }}
-            className="px-3 py-1 text-green-600 border border-green-600 text-sm rounded hover:bg-green-50 transition"
-          >
-            Return
-          </Link>
-        </div>
+      <p className="text-green-700 font-bold text-lg mb-3">₹ {product.price || "0"}</p>
 
-        <div className="mt-4 flex gap-2">
+      <div className="flex justify-between items-center mb-3">
+        <button
+          onClick={handleAddToCart}
+          className="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1 rounded flex items-center gap-1"
+        >
+          <ShoppingCart size={16} /> Add
+        </button>
+
+        {showDelete ? (
           <button
-            onClick={handleAddToCart}
-            className={`flex items-center gap-1 px-3 py-1 text-sm rounded transition ${
-              addedToCart
-                ? "bg-green-100 text-green-700 border border-green-600"
-                : "text-blue-600 border border-blue-600 hover:bg-blue-50"
-            }`}
+            onClick={handleLike}
+            className="text-red-500 hover:text-red-700"
+            title="Remove from Likes"
           >
-            <ShoppingCart size={16} />
-            {addedToCart ? "Added" : "Add to Cart"}
+            <Trash2 />
           </button>
-
+        ) : (
           <button
-            className="flex items-center gap-1 px-3 py-1 text-sm text-red-500 border border-red-500 rounded hover:bg-red-50 transition"
-            title="Add to Wishlist"
+            onClick={handleLike}
+            className={`${liked ? "text-red-500" : "text-gray-500"} hover:scale-110 transition`}
           >
-            <Heart size={16} />
-            Wishlist
+            <Heart />
           </button>
-        </div>
+        )}
       </div>
+
+      <button
+        onClick={handleBuyNow}
+        className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-sm px-4 py-1 rounded self-end transition"
+      >
+        Buy Now
+      </button>
     </div>
   );
 }
