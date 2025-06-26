@@ -1,184 +1,144 @@
 import { motion } from "framer-motion";
-import CountUp from "react-countup";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [role, setRole] = useState(null);
   const navigate = useNavigate();
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const userRole = localStorage.getItem("role");
     setRole(userRole);
   }, []);
 
-  const handleCTAClick = () => {
-    if (!role) navigate("/signup");
-    else if (role === "user") navigate("/user/dashboard");
-    else if (role === "retailer") navigate("/retailer/dashboard");
-  };
-
   return (
-    <div className="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div className="w-full min-h-screen bg-gradient-to-b from-[#e0f4e8] to-[#ffffff] flex flex-col">
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-screen grid md:grid-cols-2 place-items-center gap-12 px-6 md:px-24 py-32 bg-gradient-to-br from-green-100 to-blue-200 dark:from-gray-800 dark:to-gray-700">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-left z-10"
-        >
-          <h1 className="text-6xl font-extrabold text-green-900 dark:text-green-300 leading-tight">
-            RePack <span className="text-blue-600">GreenChain</span>
-          </h1>
-          <p className="mt-6 text-xl text-gray-700 dark:text-gray-200 max-w-xl">
-            Return packaging. Earn rewards. Power the green economy. We simplify sustainable returns for a better planet.
+      <div className="relative bg-gradient-to-br from-green-50 to-blue-50 py-24 px-6 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 w-full max-w-4xl opacity-40 pointer-events-none z-0">
+          <img
+            src="./assets/supply-map.avif"
+            alt="Map Illustration"
+            className="w-full object-contain"
+            style={{ height: "580px" }}
+          />
+        </div>
+
+        {/* White Overlay */}
+        <div className="absolute inset-0 bg-white bg-opacity-50 z-0" />
+
+        {/* Foreground Content */}
+        <div className="relative z-10 text-center max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-snug mb-2">
+            <span className="text-[#007A5E]">SMARTER, </span>
+            <span className="text-green-600">GREENER RETAIL</span>
+          </h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold leading-snug mb-4">
+            <span className="text-[#007A5E]">- POWERED BY AI</span>
+          </h2>
+          <p className="text-gray-800 max-w-xl mx-auto mb-6 text-sm md:text-base">
+            Forecast demand. Optimize routes. Reduce packaging waste. Track CO₂. Reward eco-friendly customers.
           </p>
           <button
-            onClick={handleCTAClick}
-            className="mt-10 px-8 py-4 bg-green-700 text-white text-lg font-medium rounded-full hover:bg-green-800 transition-all shadow-lg"
+            onClick={() => navigate("/signup")}
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
           >
-            {role ? "Go to Dashboard" : "Join the Movement"}
+            Join Now
           </button>
-        </motion.div>
-
-        <motion.img
-          src="/illustration-repack.png"
-          alt="Eco Illustration"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="w-full max-w-xl z-10"
-        />
-      </section>
+        </div>
+      </div>
 
       {/* Features Section */}
-      <section className="py-28 px-6 md:px-24 bg-white dark:bg-gray-900">
-        <h2 className="text-4xl font-bold text-center text-green-900 dark:text-green-300 mb-16">
-          Why RePack GreenChain?
-        </h2>
-        <div className="grid md:grid-cols-3 gap-10">
-          {["Return Packaging", "Earn Rewards", "AI Suggestions"].map((title, index) => (
-            <motion.div
+      <section className="bg-[#e6f7f2] py-16 px-4 flex flex-col items-center">
+        <h3 className="text-2xl md:text-3xl font-bold text-[#007A5E] mb-12">
+          FEATURES
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
+          {[
+            {
+              icon: "/assets/ai-icon.png",
+              title: "AI-Powered Demand Forecasting",
+              desc: "Lower overstock & spoilage",
+            },
+            {
+              icon: "/assets/route-icon.png",
+              title: "Route Optimization",
+              desc: "Lower carbon delivery",
+            },
+            {
+              icon: "/assets/co2-icon.png",
+              title: "Real-Time CO₂ & Waste Tracking Dashboard",
+              desc: "Lower overstock & spoilage",
+            },
+            {
+              icon: "/assets/package-icon.png",
+              title: "Packaging Return & Reward System",
+              desc: "Drives customer engagement & circular packaging",
+            },
+          ].map((feature, index) => (
+            <div
               key={index}
-              whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-10 rounded-3xl shadow-xl text-center"
+              className="flex items-start gap-4 bg-white rounded-xl p-6 shadow hover:shadow-lg transition"
             >
-              <div className="text-5xl mb-6">{["📦", "🎁", "🤖"][index]}</div>
-              <h3 className="text-2xl font-semibold text-green-800 dark:text-green-200 mb-2">{title}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-md">
-                {[
-                  "Scan and return used packaging via QR codes.",
-                  "Redeem points for eco-friendly rewards.",
-                  "Receive smarter packaging recommendations."
-                ][index]}
-              </p>
-            </motion.div>
+              <div className="w-14 h-14 bg-green-100 flex items-center justify-center rounded-lg">
+                <img
+                  src={feature.icon}
+                  alt={feature.title}
+                  className="w-8 h-8 object-contain"
+                />
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-green-900">
+                  {feature.title}
+                </h4>
+                <p className="text-gray-600 text-sm">{feature.desc}</p>
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-28 px-6 md:px-24 bg-gray-50 dark:bg-gray-800">
-        <h2 className="text-4xl font-bold text-center text-green-900 dark:text-green-300 mb-16">
-          How It Works
-        </h2>
-        <div className="grid md:grid-cols-3 gap-10 text-center">
-          {["Scan & Return", "Retailer Approves", "Earn & Track"].map((title, index) => (
-            <motion.div
-              key={index}
-              className="bg-white dark:bg-gray-900 p-10 rounded-2xl shadow-xl border dark:border-gray-700"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-            >
-              <div className="text-4xl font-bold text-blue-600 mb-6">{index + 1}</div>
-              <h3 className="text-2xl font-semibold text-green-800 dark:text-green-200 mb-3">{title}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-md">
-                {[
-                  "Use the app to scan packaging and drop it off.",
-                  "Retailer verifies return at their GreenPoint.",
-                  "User earns eco-points and sees impact stats."
-                ][index]}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* Achievements Section */}
+      <section
+        className="w-full py-14 px-4 text-white"
+        style={{
+          background: "linear-gradient(135deg, #007A5E 0%, #009B77 100%)",
+        }}
+      >
+        <h3 className="text-center text-2xl md:text-3xl font-semibold mb-10">
+          Together We've Achieved :
+        </h3>
 
-      {/* Impact Stats Section */}
-      <section className="py-28 bg-green-100 dark:bg-green-900 text-center px-6">
-        <h2 className="text-4xl font-bold text-green-900 dark:text-white mb-14">
-          Together, We've Achieved:
-        </h2>
-        <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto text-3xl font-semibold text-green-800 dark:text-green-200">
-          <div>
-            ♻️ <CountUp end={12000} duration={3} separator="," /> items returned
+        <div className="flex flex-col md:flex-row justify-center gap-10 text-center">
+          <div className="bg-[#10856a] rounded-xl px-8 py-6 shadow-lg">
+            <h4 className="text-4xl font-bold">12,000+</h4>
+            <p className="mt-2 text-white text-opacity-90">packages returned</p>
           </div>
-          <div>
-            🌍 <CountUp end={8} duration={2.5} decimals={1} /> tons CO₂ saved
-          </div>
-          <div>
-            🎁 <CountUp end={5000} duration={3} separator="," /> rewards redeemed
+          <div className="bg-[#10856a] rounded-xl px-8 py-6 shadow-lg">
+            <h4 className="text-4xl font-bold">8.0+</h4>
+            <p className="mt-2 text-white text-opacity-90">tons CO₂ saved</p>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-28 bg-white dark:bg-gray-900 text-center px-6">
-        <h2 className="text-4xl font-bold text-green-800 dark:text-green-300 mb-16">
-          What Users Say
-        </h2>
-        <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-          {["Aarav", "Meera"].map((name, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl shadow-md"
-            >
-              <p className="text-xl italic text-gray-700 dark:text-gray-200">
-                “{
-                  [
-                    "RePack made me love recycling. Simple & rewarding!",
-                    "Now I know my returns actually make a difference!"
-                  ][index]
-                }”
-              </p>
-              <div className="mt-6 font-semibold text-green-700 dark:text-green-300">– {name}</div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="relative bg-blue-50 dark:bg-blue-900 py-32 px-6 text-center overflow-hidden">
-  {/* Background animation/blur effect */}
-  <div className="absolute inset-0 bg-gradient-to-tr from-green-100/30 to-blue-200/30 dark:from-green-800/30 dark:to-blue-800/30 blur-2xl opacity-40 pointer-events-none" />
-
-  <div className="relative z-10 max-w-3xl mx-auto">
-    <h2 className="text-5xl font-extrabold text-blue-800 dark:text-white leading-tight mb-6">
-      Ready to make an impact?
-    </h2>
-    <p className="text-2xl text-gray-700 dark:text-gray-200 mb-10 font-medium">
-      Start returning. Start earning. Start saving the planet.
-    </p>
-    <button
-      onClick={handleCTAClick}
-      className="px-10 py-4 bg-green-600 text-white text-lg rounded-full hover:bg-green-700 transition-all shadow-xl hover:scale-105 active:scale-100"
-    >
-      {role === "user"
-        ? "Continue Your Eco Journey"
-        : role === "retailer"
-        ? "Manage GreenPoint"
-        : "Get Started with RePack"}
-    </button>
-  </div>
-</section>
+      {/* Impact Section */}
+      <div className="py-16 px-6 flex flex-col items-center text-center bg-white">
+        <h3 className="text-2xl font-bold text-green-900 mb-4">
+          Ready to make an Impact?
+        </h3>
+        <p className="text-gray-700 max-w-xl mb-6">
+          Let's drive smarter routes, greener deliveries, and circular packaging — one optimized shipment at a time.
+        </p>
+        <button
+          onClick={() => navigate("/features")}
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded transition-all"
+        >
+          Explore Features
+        </button>
+      </div>
 
     </div>
   );

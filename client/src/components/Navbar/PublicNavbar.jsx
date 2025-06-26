@@ -1,25 +1,46 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Bell } from "lucide-react";
+import { Bell, Menu, X } from "lucide-react";
 
 export default function PublicNavbar() {
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <nav className="bg-white shadow-md fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
+        {/* Logo */}
         <Link to="/" className="text-2xl font-bold tracking-tight text-green-700">
-          RePack<span className="text-blue-600">Green</span>
+          RePack<span className="text-blue-600">Green Chain</span>
         </Link>
 
+        {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
           <Link to="/" className={`hover:text-blue-600 ${location.pathname === "/" ? "text-blue-600 font-semibold" : ""}`}>Home</Link>
-          <Link to="/products" className="hover:text-blue-600">Products</Link>
           <button className="hover:text-blue-600"><Bell /></button>
           <Link to="/login" className="hover:text-blue-600">Login</Link>
           <Link to="/signup" className="hover:text-blue-600">Sign Up</Link>
         </div>
+
+        {/* Mobile Hamburger Button */}
+        <button
+          className="md:hidden text-gray-700 focus:outline-none"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {menuOpen && (
+        <div className="md:hidden px-6 pb-4 flex flex-col space-y-3 text-gray-700 font-medium bg-white shadow">
+          <Link to="/" onClick={() => setMenuOpen(false)} className={`hover:text-blue-600 ${location.pathname === "/" ? "text-blue-600 font-semibold" : ""}`}>Home</Link>
+          <button onClick={() => setMenuOpen(false)} className="hover:text-blue-600 flex items-center gap-1"><Bell /> Notifications</button>
+          <Link to="/login" onClick={() => setMenuOpen(false)} className="hover:text-blue-600">Login</Link>
+          <Link to="/signup" onClick={() => setMenuOpen(false)} className="hover:text-blue-600">Sign Up</Link>
+        </div>
+      )}
     </nav>
   );
 }

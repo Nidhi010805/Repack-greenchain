@@ -32,17 +32,21 @@ import Faq from './pages/Faq';
 import Shipping from './pages/Shipping';
 
 function App() {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+ const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+
+const isAuthenticated = token && token !== "undefined" && token !== "";
+
 
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
 
         {/* Navbar Switch */}
-        {token && role === "user" && <UserNavbar />}
-        {token && role === "retailer" && <RetailerNavbar />}
-        {!token && <PublicNavbar />}
+        {isAuthenticated && role === "user" && <UserNavbar />}
+        {isAuthenticated && role === "retailer" && <RetailerNavbar />}
+          {!isAuthenticated && <PublicNavbar />}
+
 
         <main className="flex-grow mt-20"> {/* Added margin for fixed navbar space */}
           <Routes>
