@@ -30,6 +30,7 @@ import Blog from './pages/Blog';
 import Help from './pages/Help';
 import Faq from './pages/Faq';
 import Shipping from './pages/Shipping';
+import Hero from './components/Hero';
 
 function App() {
  const token = localStorage.getItem("token");
@@ -51,6 +52,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
         <main className="flex-grow mt-20"> {/* Added margin for fixed navbar space */}
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/Hero" element={<Hero />} />
             
             {/* User Routes */}
             <Route path="/user/dashboard" element={<UserDashboard />} />
