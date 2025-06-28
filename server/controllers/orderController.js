@@ -23,8 +23,8 @@ export const createOrder = async (req, res) => {
       data: {
         userId: req.user.id,
         message,
-        type: "Order",         // Notification type (can be "Order", "Reward", etc.)
-        link: "/user/orders",   // Optional: where user should redirect on click
+        type: "Order",         
+        link: "/user/orders",   
       },
     });
 
@@ -49,13 +49,23 @@ export const getUserOrders = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
       where: { userId: req.user.id },
-      include: { product: true },
+      include: {
+        product: true,
+        returnPackaging: true,   // Yahan relation include karo
+      },
       orderBy: { orderedAt: "desc" },
     });
 
-    res.json(orders);
+    const ordersWithReturnFlag = orders.map(order => ({
+      ...order,
+      isReturnInitiated: order.returnPackaging 
+        && (order.returnPackaging.status === "pending" || order.returnPackaging.status === "initiated"),
+    }));
+
+    res.json(ordersWithReturnFlag);
   } catch (err) {
     console.error("Failed to fetch orders:", err.message);
     res.status(500).json({ message: "Failed to get orders" });
   }
 };
+

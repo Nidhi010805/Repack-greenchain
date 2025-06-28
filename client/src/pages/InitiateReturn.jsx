@@ -22,13 +22,21 @@ export default function InitiateReturn() {
 
   const initiateReturn = (orderId) => {
     const token = localStorage.getItem("token");
+    // Check if already initiated, avoid extra request
+    const order = orders.find(o => o.id === orderId);
+    if(order?.isReturnInitiated) {
+      alert("Return already initiated for this order.");
+      return;
+    }
+
     axios.post("http://localhost:5000/api/returnpackaging/initiate", 
       { orderId },
       { headers: { Authorization: `Bearer ${token}` } }
     )
     .then(() => {
       alert("Return initiated successfully!");
-      setOrders(prev => prev.filter(o => o.id !== orderId));
+      // Update orders state to mark return initiated
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, isReturnInitiated: true } : o));
     })
     .catch(err => {
       console.error(err);
@@ -53,9 +61,14 @@ export default function InitiateReturn() {
               </div>
               <button 
                 onClick={() => initiateReturn(order.id)}
-                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                disabled={order.isReturnInitiated}
+                className={`px-3 py-1 rounded text-white ${
+                  order.isReturnInitiated 
+                    ? "bg-gray-400 cursor-not-allowed" 
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
               >
-                Return
+                {order.isReturnInitiated ? "Return Initiated" : "Return"}
               </button>
             </li>
           ))}

@@ -27,8 +27,15 @@ export const initiatePackagingReturn = async (req, res) => {
       where: { orderId, userId },
     });
 
-    if (existingReturn) {
+    if (existingReturn && existingReturn.status !== "rejected") {
       return res.status(400).json({ message: "Return already initiated for this order" });
+    }
+
+    // If rejected, delete old return record and allow fresh initiation
+    if (existingReturn && existingReturn.status === "rejected") {
+      await prisma.returnPackaging.delete({
+        where: { id: existingReturn.id },
+      });
     }
 
     await prisma.returnPackaging.create({
@@ -45,6 +52,7 @@ export const initiatePackagingReturn = async (req, res) => {
     res.status(500).json({ message: "Failed to initiate return" });
   }
 };
+
 
 // 2️⃣ Get user's return history
 export const getMyPackagingReturns = async (req, res) => {
