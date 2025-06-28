@@ -1,29 +1,47 @@
-// client/src/pages/Mission.jsx
+import { motion } from "framer-motion";
+import { Leaf } from "lucide-react";
 
-export default function Mission() {
+export default function OurMission() {
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-4xl font-bold text-green-700 mb-6">Our Mission</h1>
-      <p className="text-gray-700 text-lg leading-relaxed">
-        At RePack, our mission is to revolutionize packaging through circular, sustainable practices that benefit both the planet and people. We envision a future where packaging is not wasted after one use, but returned, reused, and rewarded.
-      </p>
+    <section className="relative py-24 px-6 bg-gradient-to-b from-white to-green-50 overflow-hidden">
 
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-green-600 mb-2">Our Commitments</h2>
-        <ul className="list-disc list-inside text-gray-700 text-base">
-          <li>Creating a frictionless return system for packaging.</li>
-          <li>Rewarding eco-conscious behavior with GreenPoints.</li>
-          <li>Educating consumers about the impact of packaging waste.</li>
-          <li>Collaborating with retailers and logistics for scale.</li>
-        </ul>
-      </div>
+      {/* Subtle Background Circles */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-green-100 rounded-full opacity-30 blur-3xl"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-green-200 rounded-full opacity-20 blur-2xl"></div>
 
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-green-600 mb-2">Impact We Aim For</h2>
-        <p className="text-gray-700">
-          Through RePack, we aim to reduce single-use plastic by 40%, divert tons of waste from landfills, and drive consumer behavior toward a reuse-first mindset.
-        </p>
-      </div>
-    </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7 }}
+        className="max-w-5xl mx-auto bg-white shadow-2xl backdrop-blur-xl border border-green-100 p-12 rounded-3xl relative z-10"
+      >
+        {/* Icon */}
+        <div className="flex justify-center mb-6">
+          <div className="p-4 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full shadow-lg">
+            <Leaf size={32} />
+          </div>
+        </div>
+
+        {/* Heading */}
+        <h2 className="text-center text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-green-500 to-green-700 text-transparent bg-clip-text mb-4">
+          Our Mission
+        </h2>
+
+        {/* Decorative Underline */}
+        <div className="flex justify-center mb-6">
+          <div className="h-1 w-24 bg-green-500 rounded-full"></div>
+        </div>
+
+        {/* Description */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-center text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed"
+        >
+          We aim to redefine sustainable retail by enabling easy packaging returns and rewarding customers for responsible actions — building a greener, circular economy together.
+        </motion.p>
+      </motion.div>
+    </section>
   );
 }

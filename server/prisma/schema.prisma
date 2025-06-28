@@ -133,7 +133,9 @@ model RedeemHistory {
   userId     String
   item       String
   pointsUsed Int
-  type       String? // e.g., cashback, product, etc.
+  type       String? 
+  // e.g., cashback, product, etc.
+   cashbackAmount Int  @default(0)
   createdAt  DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -10,7 +10,6 @@ const router = express.Router();
 const prisma = new PrismaClient();
 const upload = multer({ dest: "uploads/" }); // folder for storing uploaded photos
 
-// Get Profile Route
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -27,21 +26,42 @@ router.get("/profile", authMiddleware, async (req, res) => {
 
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    const [totalReturns, totalOrders, totalApproved, totalRejected] = await Promise.all([
+    const [
+      totalReturns,
+      totalOrders,
+      totalApproved,
+      totalRejected,
+      cashbackData
+    ] = await Promise.all([
       prisma.returnPackaging.count({ where: { userId: req.user.id } }),
       prisma.order.count({ where: { userId: req.user.id } }),
       prisma.returnPackaging.count({ where: { userId: req.user.id, status: "approved" } }),
       prisma.returnPackaging.count({ where: { userId: req.user.id, status: "rejected" } }),
+      prisma.redeemHistory.aggregate({
+        _sum: { cashbackAmount: true },
+        where: { userId: req.user.id, type: "cashback" },
+      }),
     ]);
 
-    res.json({ ...user, totalReturns, totalOrders, totalApproved, totalRejected });
+    const cashbackEarned = cashbackData._sum.cashbackAmount || 0;
+
+    res.json({
+      ...user,
+      totalReturns,
+      totalOrders,
+      totalApproved,
+      totalRejected,
+      cashbackEarned,
+    });
+
   } catch (error) {
     console.error("Profile API Error:", error);
     res.status(500).json({ error: "Something went wrong", details: error.message });
   }
 });
 
-// Update Profile Route
+
+// Update Profile
 router.put("/update", authMiddleware, async (req, res) => {
   const { name, mobile, email } = req.body;
   if (!name || !email) return res.status(400).json({ error: "Name and Email required" });
@@ -65,7 +85,7 @@ router.put("/update", authMiddleware, async (req, res) => {
   }
 });
 
-// Change Password Route
+// Change Password
 router.post("/change-password", authMiddleware, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
   if (!currentPassword || !newPassword)
@@ -85,7 +105,7 @@ router.post("/change-password", authMiddleware, async (req, res) => {
   }
 });
 
-// Profile Photo Upload Route
+// Upload Profile Photo
 router.post("/upload-photo", authMiddleware, upload.single("photo"), async (req, res) => {
   try {
     await prisma.user.update({
@@ -98,7 +118,7 @@ router.post("/upload-photo", authMiddleware, upload.single("photo"), async (req,
   }
 });
 
-// Remove Profile Photo Route
+// Remove Profile Photo
 router.delete("/remove-photo", authMiddleware, async (req, res) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.user.id } });
@@ -122,7 +142,7 @@ router.delete("/remove-photo", authMiddleware, async (req, res) => {
   }
 });
 
-// Delete Account Route
+// Delete Account
 router.delete("/delete-account", authMiddleware, async (req, res) => {
   try {
     await prisma.user.delete({
@@ -134,6 +154,5 @@ router.delete("/delete-account", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Failed to delete account", details: error.message });
   }
 });
-
 
 export default router;

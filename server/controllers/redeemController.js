@@ -15,26 +15,41 @@ export const redeemPoints = async (req, res) => {
       return res.status(400).json({ error: "Not enough Green Points" });
     }
 
-    // Deduct Points
-    await prisma.user.update({
-      where: { id: req.user.id },
-      data: { greenPoints: { decrement: pointsUsed } },
-    });
+    let cashbackAmount = 0;
+
+    if (type === "cashback") {
+      cashbackAmount = pointsUsed * 1; // Example ₹0.1 per point
+
+      // Deduct Points & Add cashbackEarned
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: {
+          greenPoints: { decrement: pointsUsed },
+          cashbackEarned: { increment: cashbackAmount },
+        },
+      });
+    } else {
+      // Only deduct points for product redeem
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: { greenPoints: { decrement: pointsUsed } },
+      });
+    }
 
     // Record Redeem History
-    await prisma.redeemHistory.create({
+    const redeemRecord = await prisma.redeemHistory.create({
       data: {
         userId: req.user.id,
         item,
-        type, 
+        type,
         pointsUsed,
+        cashbackAmount,
       },
     });
 
-    // Prepare Notification Message
-    const message = `You successfully redeemed ${pointsUsed} Green Points for ${type === "product" ? item : "Cashback"}`;
+    // Notification Message
+    const message = `You successfully redeemed ${pointsUsed} Green Points for ${type === "product" ? item : `₹${cashbackAmount} Cashback`}`;
 
-    // Save Notification to DB
     const notification = await prisma.notification.create({
       data: {
         userId: req.user.id,
@@ -44,7 +59,7 @@ export const redeemPoints = async (req, res) => {
       },
     });
 
-    // Emit Real-Time Notification
+    // Real-Time Notification Emit
     const io = req.app.get("io");
     io.to(`user-${req.user.id}`).emit("newNotification", {
       id: notification.id,
@@ -56,9 +71,10 @@ export const redeemPoints = async (req, res) => {
 
     res.json({
       message: "Redeem successful",
-      remainingPoints: user.greenPoints - pointsUsed,
+      cashbackAmount,
+      redeemRecord,
     });
-    
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong" });
