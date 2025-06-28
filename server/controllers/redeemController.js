@@ -21,17 +21,44 @@ export const redeemPoints = async (req, res) => {
       data: { greenPoints: { decrement: pointsUsed } },
     });
 
-    // Record History
+    // Record Redeem History
     await prisma.redeemHistory.create({
       data: {
         userId: req.user.id,
         item,
-        type, // "cashback" or "product"
+        type, 
         pointsUsed,
       },
     });
 
-    res.json({ message: "Redeem successful", remainingPoints: user.greenPoints - pointsUsed });
+    // Prepare Notification Message
+    const message = `You successfully redeemed ${pointsUsed} Green Points for ${type === "product" ? item : "Cashback"}`;
+
+    // Save Notification to DB
+    const notification = await prisma.notification.create({
+      data: {
+        userId: req.user.id,
+        message,
+        type: "Reward",
+        link: "/my-rewards",
+      },
+    });
+
+    // Emit Real-Time Notification
+    const io = req.app.get("io");
+    io.to(`user-${req.user.id}`).emit("newNotification", {
+      id: notification.id,
+      message: notification.message,
+      type: notification.type,
+      link: notification.link,
+      createdAt: notification.createdAt,
+    });
+
+    res.json({
+      message: "Redeem successful",
+      remainingPoints: user.greenPoints - pointsUsed,
+    });
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong" });

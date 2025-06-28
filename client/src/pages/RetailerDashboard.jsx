@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 
+
 export default function RetailerDashboard() {
   const [retailer, setRetailer] = useState(null);
   const [returns, setReturns] = useState([]);
@@ -11,6 +12,7 @@ export default function RetailerDashboard() {
   const [selectedReturn, setSelectedReturn] = useState(null);
   const [material, setMaterial] = useState("");
   const [size, setSize] = useState("");
+  const [productId, setProductId] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -55,7 +57,7 @@ export default function RetailerDashboard() {
     const token = localStorage.getItem("token");
     try {
       await axios.put(`http://localhost:5000/api/returnpackaging/approve/${selectedReturn.id}`,
-        { material, size },
+        { material, size, productId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Return approved and points added!");
@@ -63,6 +65,7 @@ export default function RetailerDashboard() {
       setShowScan(false);
       setMaterial("");
       setSize("");
+      setProductId("");
     } catch (err) {
       console.error(err);
       alert("Approval failed!");
@@ -128,7 +131,7 @@ export default function RetailerDashboard() {
 
       {/* Tabs */}
       <div className="flex gap-4 mb-6">
-        {["pending", "approved", "rejected"].map((tab) => (
+        {['pending', 'approved', 'rejected'].map((tab) => (
           <button
             key={tab}
             className={`px-4 py-2 rounded ${activeTab === tab ? "bg-green-600 text-white" : "bg-gray-100 text-gray-700"}`}
@@ -177,6 +180,15 @@ export default function RetailerDashboard() {
           <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
             <h2 className="text-lg font-semibold mb-4">Scan & Verify Packaging</h2>
 
+            <label className="block mb-2">Product ID (Scan result):</label>
+            <input
+              type="text"
+              placeholder="Scanned Product ID"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              className="border px-3 py-2 w-full mb-4"
+            />
+
             <label className="block mb-2">Material:</label>
             <select value={material} onChange={(e) => setMaterial(e.target.value)} className="border px-3 py-2 w-full mb-4">
               <option value="">Select Material</option>
@@ -195,7 +207,7 @@ export default function RetailerDashboard() {
 
             <div className="flex justify-end gap-2">
               <button className="px-4 py-2 bg-gray-300 rounded" onClick={() => setShowScan(false)}>Cancel</button>
-              <button className="px-4 py-2 bg-green-600 text-white rounded" onClick={handleFinalApprove} disabled={!material || !size}>
+              <button className="px-4 py-2 bg-green-600 text-white rounded" onClick={handleFinalApprove} disabled={!material || !size || !productId}>
                 Approve & Add Points
               </button>
             </div>

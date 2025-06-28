@@ -1,8 +1,10 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Bell, User, LogOut, Menu, X } from "lucide-react";
+import {  LogOut, Menu, X } from "lucide-react";
 import CartIcon from "../CartIcon";
 import LikesIcon from "../LikesIcon";
+import NotificationBell from "../NotificationBell";
 import { useState } from "react";
+
 
 export default function UserNavbar() {
   const [profileOpen, setProfileOpen] = useState(false);
@@ -10,13 +12,14 @@ export default function UserNavbar() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
       setSearchTerm("");
-      setMenuOpen(false); // close menu on search (mobile)
+      setMenuOpen(false);
     }
   };
 
@@ -49,19 +52,31 @@ export default function UserNavbar() {
         <div className="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
           <Link to="/" className={`hover:text-blue-600 ${location.pathname === "/" ? "text-blue-600 font-semibold" : ""}`}>Home</Link>
           <Link to="/products" className="hover:text-blue-600">Products</Link>
+          <Link to="/leaderboard" className="hover:text-blue-600">Leaderboard</Link>
           <Link to="/cart" className="hover:text-blue-600"><CartIcon /></Link>
           <Link to="/likes" className="hover:text-blue-600"><LikesIcon /></Link>
-          <button className="hover:text-blue-600"><Bell /></button>
+
+          {/* Real-Time Notification Bell */}
+          <NotificationBell />
 
           {/* Profile Dropdown */}
           <div className="relative">
-            <button onClick={() => setProfileOpen(!profileOpen)} className="hover:text-blue-600"><User /></button>
+            <button
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="hover:text-blue-600 flex items-center justify-center w-9 h-9 bg-green-100 rounded-full text-green-700 font-bold uppercase"
+            >
+              {localStorage.getItem("name") ? localStorage.getItem("name")[0] : "U"}
+            </button>
+
             {profileOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md text-sm z-10">
                 <Link to="/user/dashboard" className="block px-4 py-2 hover:bg-gray-100">Dashboard</Link>
                 <Link to="/my-returns" className="block px-4 py-2 hover:bg-gray-100">My Returns</Link>
                 <Link to="/my-rewards" className="block px-4 py-2 hover:bg-gray-100">My Rewards</Link>
-                <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                >
                   <LogOut size={16} /> Logout
                 </button>
               </div>
@@ -69,11 +84,8 @@ export default function UserNavbar() {
           </div>
         </div>
 
-        {/* Hamburger Icon (Mobile) */}
-        <button
-          className="md:hidden text-gray-700"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
+        {/* Hamburger Icon */}
+        <button className="md:hidden text-gray-700" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
@@ -93,9 +105,19 @@ export default function UserNavbar() {
 
           <Link to="/" onClick={() => setMenuOpen(false)} className={`hover:text-blue-600 ${location.pathname === "/" ? "text-blue-600 font-semibold" : ""}`}>Home</Link>
           <Link to="/products" onClick={() => setMenuOpen(false)} className="hover:text-blue-600">Products</Link>
+          <Link to="/leaderboard" onClick={() => setMenuOpen(false)} className="hover:text-blue-600">Leaderboard</Link>
           <Link to="/cart" onClick={() => setMenuOpen(false)} className="hover:text-blue-600 flex items-center gap-2"><CartIcon /> Cart</Link>
           <Link to="/likes" onClick={() => setMenuOpen(false)} className="hover:text-blue-600 flex items-center gap-2"><LikesIcon /> Likes</Link>
-          <button className="hover:text-blue-600 flex items-center gap-2"><Bell /> Notifications</button>
+
+          {/* <Link to="/notifications" onClick={() => setMenuOpen(false)} className="hover:text-blue-600 flex items-center gap-2 relative">
+            Notifications
+            {notifications.length > 0 && (
+              <span className="ml-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                {notifications.length}
+              </span>
+            )}
+          </Link> */}
+
           <Link to="/user/dashboard" onClick={() => setMenuOpen(false)} className="hover:text-blue-600">Dashboard</Link>
           <Link to="/my-returns" onClick={() => setMenuOpen(false)} className="hover:text-blue-600">My Returns</Link>
           <Link to="/my-rewards" onClick={() => setMenuOpen(false)} className="hover:text-blue-600">My Rewards</Link>

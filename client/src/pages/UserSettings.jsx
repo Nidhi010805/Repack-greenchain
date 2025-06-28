@@ -11,7 +11,7 @@ export default function UserSettings() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchProfile = () => {
     const token = localStorage.getItem("token");
     if (!token) return navigate("/login");
 
@@ -26,7 +26,11 @@ export default function UserSettings() {
         setEmail(data.email);
       })
       .catch(() => navigate("/login"));
-  }, [navigate]);
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const handleProfileUpdate = () => {
     const token = localStorage.getItem("token");
@@ -89,8 +93,48 @@ export default function UserSettings() {
         if (data.error) return alert(data.error);
         alert("Profile photo updated!");
         setPhoto(null);
+        fetchProfile();
       })
       .catch(() => alert("Photo upload failed"));
+  };
+const handleDeleteAccount = () => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete your account? This action cannot be undone."
+  );
+  if (!confirmDelete) return;
+
+  const token = localStorage.getItem("token");
+
+  fetch("http://localhost:5000/api/user/delete-account", {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.error) return alert(data.error);
+      alert("Your account has been deleted.");
+      localStorage.removeItem("token");
+      navigate("/signup"); // Redirect to signup or home
+    })
+    .catch(() => alert("Failed to delete account"));
+};
+
+  const handleRemovePhoto = () => {
+    const confirmDelete = window.confirm("Are you sure you want to remove your profile photo?");
+    if (!confirmDelete) return;
+
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:5000/api/user/remove-photo", {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) return alert(data.error);
+        alert("Profile photo removed!");
+        fetchProfile();
+      })
+      .catch(() => alert("Failed to remove photo"));
   };
 
   if (!user) {
@@ -177,6 +221,22 @@ export default function UserSettings() {
       {/* Profile Photo Upload */}
       <h3 className="text-lg font-semibold mb-4">Profile Photo</h3>
 
+      {user.profilePhoto && (
+        <div className="mb-4 flex items-center gap-4">
+          <img
+            src={`http://localhost:5000/uploads/${user.profilePhoto}`}
+            alt="Profile"
+            className="w-16 h-16 rounded-full border"
+          />
+          <button
+            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            onClick={handleRemovePhoto}
+          >
+            Remove Photo
+          </button>
+        </div>
+      )}
+
       <input
         type="file"
         accept="image/*"
@@ -190,6 +250,18 @@ export default function UserSettings() {
       >
         Upload Photo
       </button>
+
+      <hr className="my-6" />
+
+<h3 className="text-lg font-semibold mb-4 text-red-600">Danger Zone</h3>
+
+<button
+  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+  onClick={handleDeleteAccount}
+>
+  Delete My Account
+</button>
+
     </div>
   );
 }

@@ -8,9 +8,15 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await prisma.user.findUnique({ where: { id: decoded.id } });
+
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) {
+      return res.status(401).json({ error: "User Not Found" });
+    }
+
+    req.user = { id: user.id }; 
     next();
-  } catch {
+  } catch (err) {
     return res.status(401).json({ error: "Invalid Token" });
   }
 };

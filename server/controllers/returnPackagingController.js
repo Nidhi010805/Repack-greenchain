@@ -79,43 +79,69 @@ export const getMyPackagingReturns = async (req, res) => {
 // 3️⃣ Retailer approves return
 export const approvePackagingReturn = async (req, res) => {
   const { id } = req.params;
-  const { material, size } = req.body;
+  const { productId } = req.body;
 
-  if (!material || !size) {
-    return res.status(400).json({ message: "Material and Size are required" });
+  if (!productId) {
+    return res.status(400).json({ message: "Product ID is required from scanner" });
   }
 
   try {
     const packagingReturn = await prisma.returnPackaging.findUnique({
       where: { id },
-      include: {
-        user: true,
-        order: { include: { product: true } },
-      },
+      include: { user: true, order: true },
     });
 
     if (!packagingReturn) return res.status(404).json({ message: "Return not found" });
     if (packagingReturn.status === "approved") return res.status(400).json({ message: "Already approved" });
 
+    const product = await prisma.product.findUnique({ where: { id: productId } });
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
     const quantity = packagingReturn.order.quantity || 1;
-    const perUnitPoints = calculatePoints(material, size);
+    const perUnitPoints = calculatePoints(product.material, product.size);
     const totalPoints = perUnitPoints * quantity;
 
+    // Update return status
     await prisma.returnPackaging.update({
       where: { id },
-      data: {
-        status: "approved",
-        material,
-        size,
-      },
+      data: { status: "approved", material: product.material, size: product.size },
     });
 
+    // Add green points to user
     await prisma.user.update({
       where: { id: packagingReturn.userId },
       data: { greenPoints: { increment: totalPoints } },
     });
 
-    res.json({ message: "Return approved", pointsAdded: totalPoints });
+    // Notification message
+    const message = `Your return was approved! You earned ${totalPoints} Green Points.`;
+
+    // Save notification to DB
+    const notification = await prisma.notification.create({
+      data: {
+        userId: packagingReturn.userId,
+        message,
+        type: "Return",
+        link: "/my-returns",
+      },
+    });
+
+    // Emit real-time notification
+    const io = req.app.get("io");
+    io.to(`user-${packagingReturn.userId}`).emit("newNotification", {
+      id: notification.id,
+      message: notification.message,
+      type: notification.type,
+      link: notification.link,
+      createdAt: notification.createdAt,
+    });
+
+    res.json({
+      message: "Return approved using scanned Product ID",
+      material: product.material,
+      size: product.size,
+      pointsAdded: totalPoints,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });

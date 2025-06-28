@@ -16,6 +16,28 @@ export const createOrder = async (req, res) => {
       },
     });
 
+    const message = `Your order for Product ID ${productId} with quantity ${quantity} has been placed successfully.`;
+
+    // Save Notification to DB
+    const notification = await prisma.notification.create({
+      data: {
+        userId: req.user.id,
+        message,
+        type: "Order",         // Notification type (can be "Order", "Reward", etc.)
+        link: "/user/orders",   // Optional: where user should redirect on click
+      },
+    });
+
+    // Emit real-time notification to that user
+    const io = req.app.get("io");
+    io.to(`user-${req.user.id}`).emit("newNotification", {
+      id: notification.id,
+      message: notification.message,
+      type: notification.type,
+      link: notification.link,
+      createdAt: notification.createdAt,
+    });
+
     res.json({ message: "Order placed successfully", order });
   } catch (err) {
     console.error("Order creation failed:", err.message);

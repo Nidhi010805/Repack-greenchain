@@ -123,11 +123,17 @@ export default function ProductCard({ product, showDelete, onDelete }) {
 
   return (
     <div className="border rounded-2xl shadow hover:shadow-lg transition p-4 flex flex-col justify-between h-full bg-white">
-      <img
-        src={product.imageUrl || ""}
-        alt={product.name || "Product"}
-        className="h-40 w-full object-contain mb-3"
-      />
+      {product.imageUrl ? (
+  <img
+    src={product.imageUrl}
+    alt={product.name || "Product"}
+    className="h-40 w-full object-contain mb-3"
+  />
+) : (
+  <div className="h-40 w-full flex items-center justify-center bg-gray-100 text-gray-400">
+    No Image
+  </div>
+)}
 
       <h2 className="text-lg font-semibold text-gray-800">{product.name || "Unnamed Product"}</h2>
       <p className="text-gray-500 text-sm mb-1">{product.category || "No Category"}</p>

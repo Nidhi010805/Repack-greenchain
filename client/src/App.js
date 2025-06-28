@@ -3,6 +3,8 @@ import UserNavbar from './components/Navbar/UserNavbar';
 import RetailerNavbar from './components/Navbar/RetailerNavbar';
 import PublicNavbar from './components/Navbar/PublicNavbar';
 import Footer from './components/Footer';
+import Leaderboard from "./components/Leaderboard";
+import NotificationProvider from "./context/NotificationContext";
 
 // Pages
 import Home from './pages/Home';
@@ -40,6 +42,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
 
 
   return (
+    <NotificationProvider> 
     <Router>
       <div className="flex flex-col min-h-screen">
 
@@ -62,6 +65,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
             <Route path="/my-returns" element={<MyReturns />} />
             <Route path="/initiate-return" element={<InitiateReturn />} />
             <Route path="/my-rewards" element={<Rewards />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
 
             {/* Retailer Routes */}
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
@@ -90,6 +94,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
         <Footer />
       </div>
     </Router>
+    </NotificationProvider> 
   );
 }
 

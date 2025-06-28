@@ -27,6 +27,10 @@ export default function Login() {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.role);
+       localStorage.setItem("name", data.user.name);
+       localStorage.setItem("userId", data.user.id);
+localStorage.setItem("userId", data.user.id);
+
 
         // ✅ Navigate based on actual backend role
         if (data.role?.toLowerCase() === "retailer") {
