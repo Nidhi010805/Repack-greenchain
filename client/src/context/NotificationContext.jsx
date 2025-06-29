@@ -1,63 +1,56 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import API from "../services/api";
 
 const NotificationContext = createContext();
 
 export default function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    
-
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
 
-    
+    if (!token || !userId) return;
 
-    if (!token || !userId) {
-      
-      return;
-    }
-
-    
     const SERVER_URL = "http://localhost:5000";
 
     // Step 1: Fetch Existing Notifications
-    fetch(`${SERVER_URL}/api/notifications`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        
-        setNotifications(data);
-      })
+    API.get("/api/notifications")
+      .then(res => setNotifications(res.data))
       .catch(err => console.error("❌ Error fetching notifications:", err));
 
     // Step 2: Socket Connection for Live Updates
-    const socket = io(SERVER_URL, {
+    socketRef.current = io(SERVER_URL, {
       auth: { token },
       transports: ["websocket"],
     });
 
-    socket.on("connect", () => {
-      
-      socket.emit("join", userId);
+    socketRef.current.on("connect", () => {
+      socketRef.current.emit("join", userId);
     });
 
-    socket.on("newNotification", (data) => {
-    
-      setNotifications((prev) => [data, ...prev]);
+    socketRef.current.on("newNotification", (data) => {
+      setNotifications((prev) => {
+        const exists = prev.some(n => n.id === data.id);
+        return exists ? prev : [data, ...prev];
+      });
     });
 
-    socket.on("disconnect", (reason) => {
-      
+    socketRef.current.on("disconnect", () => {
+      console.log("Socket disconnected");
     });
 
-    socket.on("connect_error", (error) => {
-      
+    socketRef.current.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
     });
 
-    return () => socket.disconnect();
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
   }, []);
 
   return (

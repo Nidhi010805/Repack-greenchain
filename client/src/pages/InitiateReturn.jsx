@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function InitiateReturn() {
   const [orders, setOrders] = useState([]);
@@ -10,38 +10,30 @@ export default function InitiateReturn() {
     const token = localStorage.getItem("token");
     if (!token) return navigate("/login");
 
-    axios.get("http://localhost:5000/api/order/my", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => setOrders(res.data))
-    .catch(err => {
-      console.error(err);
-      alert("Failed to load orders");
-    });
+    API.get("/api/order/my")
+      .then(res => setOrders(res.data))
+      .catch(err => {
+        console.error(err);
+        alert("Failed to load orders");
+      });
   }, [navigate]);
 
   const initiateReturn = (orderId) => {
-    const token = localStorage.getItem("token");
-    // Check if already initiated, avoid extra request
     const order = orders.find(o => o.id === orderId);
-    if(order?.isReturnInitiated) {
+    if (order?.isReturnInitiated) {
       alert("Return already initiated for this order.");
       return;
     }
 
-    axios.post("http://localhost:5000/api/returnpackaging/initiate", 
-      { orderId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .then(() => {
-      alert("Return initiated successfully!");
-      // Update orders state to mark return initiated
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, isReturnInitiated: true } : o));
-    })
-    .catch(err => {
-      console.error(err);
-      alert(err.response?.data?.message || "Failed to initiate return");
-    });
+    API.post("/api/returnpackaging/initiate", { orderId })
+      .then(() => {
+        alert("Return initiated successfully!");
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, isReturnInitiated: true } : o));
+      })
+      .catch(err => {
+        console.error(err);
+        alert(err.response?.data?.message || "Failed to initiate return");
+      });
   };
 
   return (

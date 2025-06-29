@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API from "../services/api";
 
 export default function MyReturns() {
   const [returns, setReturns] = useState([]);
@@ -8,15 +9,9 @@ export default function MyReturns() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch("http://localhost:5000/api/returnpackaging/my-packaging", {
-      headers: { Authorization: `Bearer ${token}` },
-
-
-    })
-
-      .then(res => res.json())
-      .then(data => {
-        setReturns(data);
+    API.get("/api/returnpackaging/my-packaging")
+      .then(res => {
+        setReturns(res.data);
         setLoading(false);
       })
       .catch(err => {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function UserSettings() {
   const [user, setUser] = useState(null);
@@ -12,18 +13,12 @@ export default function UserSettings() {
   const navigate = useNavigate();
 
   const fetchProfile = () => {
-    const token = localStorage.getItem("token");
-    if (!token) return navigate("/login");
-
-    fetch("http://localhost:5000/api/user/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data);
-        setName(data.name);
-        setMobile(data.mobile || "");
-        setEmail(data.email);
+    API.get("/api/user/profile")
+      .then((res) => {
+        setUser(res.data);
+        setName(res.data.name);
+        setMobile(res.data.mobile || "");
+        setEmail(res.data.email);
       })
       .catch(() => navigate("/login"));
   };
@@ -33,108 +28,67 @@ export default function UserSettings() {
   }, []);
 
   const handleProfileUpdate = () => {
-    const token = localStorage.getItem("token");
     if (!name || !email) return alert("Name and Email are required");
 
-    fetch("http://localhost:5000/api/user/update", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ name, mobile, email }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) return alert(data.error);
+    API.put("/api/user/update", { name, mobile, email })
+      .then((res) => {
         alert("Profile updated successfully!");
-        setUser(data.user);
+        setUser(res.data.user);
       })
       .catch(() => alert("Failed to update profile"));
   };
 
   const handlePasswordChange = () => {
-    const token = localStorage.getItem("token");
     if (!passwords.currentPassword || !passwords.newPassword) {
       return alert("Please fill both password fields");
     }
 
-    fetch("http://localhost:5000/api/user/change-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(passwords),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) return alert(data.error);
+    API.post("/api/user/change-password", passwords)
+      .then((res) => {
         alert("Password changed successfully!");
         setPasswords({ currentPassword: "", newPassword: "" });
       })
-      .catch(() => alert("Failed to change password"));
+      .catch((err) => {
+        alert(err.response?.data?.error || "Failed to change password");
+      });
   };
 
   const handlePhotoUpload = () => {
     if (!photo) return alert("Please select a photo");
 
-    const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("photo", photo);
 
-    fetch("http://localhost:5000/api/user/upload-photo", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) return alert(data.error);
+    API.post("/api/user/upload-photo", formData)
+      .then(() => {
         alert("Profile photo updated!");
         setPhoto(null);
         fetchProfile();
       })
       .catch(() => alert("Photo upload failed"));
   };
-const handleDeleteAccount = () => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete your account? This action cannot be undone."
-  );
-  if (!confirmDelete) return;
-
-  const token = localStorage.getItem("token");
-
-  fetch("http://localhost:5000/api/user/delete-account", {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.error) return alert(data.error);
-      alert("Your account has been deleted.");
-      localStorage.removeItem("token");
-      navigate("/signup"); // Redirect to signup or home
-    })
-    .catch(() => alert("Failed to delete account"));
-};
 
   const handleRemovePhoto = () => {
-    const confirmDelete = window.confirm("Are you sure you want to remove your profile photo?");
-    if (!confirmDelete) return;
+    if (!window.confirm("Are you sure you want to remove your profile photo?")) return;
 
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:5000/api/user/remove-photo", {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) return alert(data.error);
+    API.delete("/api/user/remove-photo")
+      .then(() => {
         alert("Profile photo removed!");
         fetchProfile();
       })
       .catch(() => alert("Failed to remove photo"));
+  };
+
+  const handleDeleteAccount = () => {
+    if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
+
+    API.delete("/api/user/delete-account")
+      .then(() => {
+        alert("Your account has been deleted.");
+        localStorage.removeItem("token");
+        navigate("/signup");
+      })
+      .catch(() => alert("Failed to delete account"));
   };
 
   if (!user) {
@@ -149,7 +103,6 @@ const handleDeleteAccount = () => {
     <div className="max-w-xl mx-auto mt-24 p-6 bg-white rounded-lg shadow">
       <h2 className="text-2xl font-bold mb-6">Account Settings</h2>
 
-      {/* Profile Update */}
       <div className="mb-4">
         <label className="block mb-1">Name</label>
         <input
@@ -186,7 +139,6 @@ const handleDeleteAccount = () => {
 
       <hr className="my-6" />
 
-      {/* Password Change */}
       <h3 className="text-lg font-semibold mb-4">Change Password</h3>
 
       <div className="mb-4">
@@ -218,7 +170,6 @@ const handleDeleteAccount = () => {
 
       <hr className="my-6" />
 
-      {/* Profile Photo Upload */}
       <h3 className="text-lg font-semibold mb-4">Profile Photo</h3>
 
       {user.profilePhoto && (
@@ -253,15 +204,14 @@ const handleDeleteAccount = () => {
 
       <hr className="my-6" />
 
-<h3 className="text-lg font-semibold mb-4 text-red-600">Danger Zone</h3>
+      <h3 className="text-lg font-semibold mb-4 text-red-600">Danger Zone</h3>
 
-<button
-  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-  onClick={handleDeleteAccount}
->
-  Delete My Account
-</button>
-
+      <button
+        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        onClick={handleDeleteAccount}
+      >
+        Delete My Account
+      </button>
     </div>
   );
 }

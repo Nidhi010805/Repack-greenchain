@@ -1,21 +1,19 @@
 import { ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../services/api";  
 
 export default function CartIcon() {
-  const token = localStorage.getItem("token");
   const [count, setCount] = useState(() => {
     return parseInt(localStorage.getItem("cartCount")) || 0;
   });
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     const fetchCart = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/cart/my", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await API.get("/api/cart/my");  
         const total = res.data.reduce((sum, item) => sum + item.quantity, 0);
         setCount(total);
         localStorage.setItem("cartCount", total);
@@ -34,7 +32,7 @@ export default function CartIcon() {
     window.addEventListener("cart-updated", handleUpdate);
 
     return () => window.removeEventListener("cart-updated", handleUpdate);
-  }, [token]);
+  }, []);
 
   return (
     <div className="relative">

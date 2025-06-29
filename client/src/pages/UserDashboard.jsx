@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import API from "../services/api";
 
 export default function UserDashboard() {
   const [user, setUser] = useState(null);
@@ -8,17 +9,13 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       navigate("/login");
       return;
     }
 
-    fetch("http://localhost:5000/api/user/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setUser(data))
+    API.get("/api/user/profile")
+      .then((res) => setUser(res.data))
       .catch(() => {
         localStorage.removeItem("token");
         navigate("/login");
@@ -35,7 +32,7 @@ export default function UserDashboard() {
 
   const profileImg = user.profilePhoto
     ? `http://localhost:5000/uploads/${user.profilePhoto}`
-    : "https://via.placeholder.com/100?text=Avatar"; // Default avatar image
+    : "https://via.placeholder.com/100?text=Avatar";
 
   return (
     <div className="max-w-5xl mx-auto mt-24 px-4">
@@ -60,7 +57,11 @@ export default function UserDashboard() {
         <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center justify-center">
           <h2 className="text-lg font-semibold mb-2">Membership Level</h2>
           <p className="text-2xl font-bold text-green-600">
-            {user.greenPoints >= 100 ? "🌍 Green Warrior" : user.greenPoints >= 50 ? "🌱 Silver Member" : "🌿 Bronze Member"}
+            {user.greenPoints >= 100
+              ? "🌍 Green Warrior"
+              : user.greenPoints >= 50
+              ? "🌱 Silver Member"
+              : "🌿 Bronze Member"}
           </p>
           <p className="text-sm text-gray-500 mt-2">Contribute more to unlock badges</p>
         </div>
@@ -70,18 +71,11 @@ export default function UserDashboard() {
       <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         <Card title="My Orders" desc={`${user.totalOrders || 0} orders placed`} onClick={() => navigate("/my-orders")} />
         <Card title="Returns" desc={`${user.totalReturns || 0} returns processed`} onClick={() => navigate("/my-returns")} />
-        <Card 
-              title="Rewards" 
-           desc={`${user.greenPoints} points, ₹${user.cashbackEarned} cashback`} 
-              onClick={() => navigate("/my-rewards")} 
-           />
-
+        <Card title="Rewards" desc={`${user.greenPoints} points, ₹${user.cashbackEarned} cashback`} onClick={() => navigate("/my-rewards")} />
         <Card title="Settings" desc="Manage account info" onClick={() => navigate("/user/settings")} />
-          
-
       </div>
 
-      {/* Referral & Offers */}
+      {/* Referral Section */}
       <div className="bg-white shadow p-6 rounded-lg">
         <h2 className="text-lg font-semibold mb-2">Refer & Earn</h2>
         <p className="text-gray-600 mb-4">Invite your friends and earn 50 Green Points for each signup!</p>

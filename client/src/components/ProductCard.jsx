@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Heart, ShoppingCart, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../services/api";  
 
 export default function ProductCard({ product, showDelete }) {
   const [liked, setLiked] = useState(false);
@@ -13,9 +13,7 @@ export default function ProductCard({ product, showDelete }) {
     if (!token || !product?.id) return;
     const fetchLikes = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/likes/my", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await API.get("/api/likes/my");
         const isLiked = res.data.some((like) => like.productId === product.id);
         setLiked(isLiked);
       } catch (err) {
@@ -36,15 +34,10 @@ export default function ProductCard({ product, showDelete }) {
   const handleAddToCart = async () => {
     if (!token) return alert("Please login first");
     try {
-      await axios.post(
-        "http://localhost:5000/api/cart/add",
-        { productId: product.id, quantity: 1 },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await API.post("/api/cart/add", { productId: product.id, quantity: 1 });
       alert("Product added to cart!");
-      const res = await axios.get("http://localhost:5000/api/cart/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+
+      const res = await API.get("/api/cart/my");
       const total = res.data.reduce((sum, item) => sum + item.quantity, 0);
       localStorage.setItem("cartCount", total);
       window.dispatchEvent(new Event("cart-updated"));
@@ -57,11 +50,7 @@ export default function ProductCard({ product, showDelete }) {
   const handleBuyNow = async () => {
     if (!token) return alert("Please login first");
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/order/place",
-        { productId: product.id, quantity: 1 },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await API.post("/api/order/place", { productId: product.id, quantity: 1 });
       if (res.status === 200) {
         alert("Order placed successfully!");
         navigate("/my-orders");
@@ -78,23 +67,15 @@ export default function ProductCard({ product, showDelete }) {
     if (!token) return alert("Please login first");
     try {
       if (liked) {
-        await axios.delete(`http://localhost:5000/api/likes/remove/${product.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await API.delete(`/api/likes/remove/${product.id}`);
         setLiked(false);
         alert("Removed from Likes");
       } else {
-        await axios.post(
-          "http://localhost:5000/api/likes/add",
-          { productId: product.id },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await API.post("/api/likes/add", { productId: product.id });
         setLiked(true);
         alert("Added to Likes");
       }
-      const res = await axios.get("http://localhost:5000/api/likes/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await API.get("/api/likes/my");
       localStorage.setItem("likesCount", res.data.length);
       window.dispatchEvent(new Event("likes-updated"));
     } catch (err) {
@@ -125,15 +106,9 @@ export default function ProductCard({ product, showDelete }) {
       )}
 
       {/* Product Details */}
-      <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
-        {product.name || "Unnamed Product"}
-      </h2>
-      <p className="text-gray-500 text-sm mb-1 line-clamp-1">
-        {product.category || "No Category"}
-      </p>
-      <p className="text-gray-600 text-sm mb-3 line-clamp-3">
-        {product.description || "No Description"}
-      </p>
+      <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">{product.name || "Unnamed Product"}</h2>
+      <p className="text-gray-500 text-sm mb-1 line-clamp-1">{product.category || "No Category"}</p>
+      <p className="text-gray-600 text-sm mb-3 line-clamp-3">{product.description || "No Description"}</p>
 
       {/* Price */}
       <p className="text-green-700 font-bold text-lg mb-3">₹ {product.price || "0"}</p>

@@ -1,20 +1,18 @@
 // src/components/LikesIcon.jsx
 import { Heart } from "lucide-react";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../services/api";  
 
 export default function LikesIcon() {
   const [count, setCount] = useState(0);
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     const fetchLikes = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/likes/my", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await API.get("/api/likes/my");
         const totalLikes = res.data.length;
         setCount(totalLikes);
         localStorage.setItem("likesCount", totalLikes);
@@ -33,7 +31,7 @@ export default function LikesIcon() {
     window.addEventListener("likes-updated", handleUpdate);
 
     return () => window.removeEventListener("likes-updated", handleUpdate);
-  }, [token]);
+  }, []);
 
   return (
     <div className="relative">

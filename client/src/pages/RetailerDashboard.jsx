@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../services/api";
 
 export default function RetailerDashboard() {
   const [retailer, setRetailer] = useState(null);
@@ -29,14 +29,11 @@ export default function RetailerDashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const profileRes = await axios.get("http://localhost:5000/api/user/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const profileRes = await API.get("/api/user/profile");
         setRetailer(profileRes.data);
 
-        const returnsRes = await axios.get(
-          `http://localhost:5000/api/returnpackaging/all?status=${activeTab}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+        const returnsRes = await API.get(
+          `/api/returnpackaging/all?status=${activeTab}`
         );
         setReturns(returnsRes.data);
         setLoading(false);
@@ -49,7 +46,6 @@ export default function RetailerDashboard() {
     fetchData();
   }, [navigate, activeTab]);
 
-  // Open modal & set selected return item
   const openScanForm = (ret) => {
     setSelectedReturn(ret);
     setMaterial("");
@@ -57,52 +53,32 @@ export default function RetailerDashboard() {
     setShowScan(true);
   };
 
-  // Final approve after selecting size & material
   const handleFinalApprove = async () => {
-  if (!material || !size) {
-    alert("Please select both material and size.");
-    return;
-  }
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("You must be logged in to approve returns.");
-    navigate("/login");
-    return;
-  }
-  try {
-    await axios.put(
-      `http://localhost:5000/api/returnpackaging/approve/${selectedReturn.id}`,
-      {
+    if (!material || !size) {
+      alert("Please select both material and size.");
+      return;
+    }
+    try {
+      await API.put(`/api/returnpackaging/approve/${selectedReturn.id}`, {
         material,
         size,
         productId: selectedReturn.order.product.id,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` }, // <---- Add this!
-      }
-    );
-    alert("Return approved and points added!");
-    setReturns((prev) => prev.filter((r) => r.id !== selectedReturn.id));
-    setShowScan(false);
-    setSelectedReturn(null);
-    setMaterial("");
-    setSize("");
-  } catch (err) {
-    console.error(err.response?.data || err.message || err);
-    alert("Approval failed!");
-  }
-};
+      });
+      alert("Return approved and points added!");
+      setReturns((prev) => prev.filter((r) => r.id !== selectedReturn.id));
+      setShowScan(false);
+      setSelectedReturn(null);
+      setMaterial("");
+      setSize("");
+    } catch (err) {
+      console.error(err.response?.data || err.message || err);
+      alert("Approval failed!");
+    }
+  };
 
   const handleAction = async (id, action) => {
-    const token = localStorage.getItem("token");
     try {
-      await axios.put(
-        `http://localhost:5000/api/returnpackaging/${action}/${id}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await API.put(`/api/returnpackaging/${action}/${id}`);
       alert(`Return ${action}ed successfully!`);
       setReturns((prev) => prev.filter((r) => r.id !== id));
     } catch (err) {
@@ -252,7 +228,9 @@ export default function RetailerDashboard() {
       {showScan && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
-            <h2 className="text-lg font-semibold mb-4">Select Material & Size</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              Select Material & Size
+            </h2>
 
             <label className="block mb-2">Material:</label>
             <select

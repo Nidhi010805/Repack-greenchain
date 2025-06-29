@@ -1,21 +1,14 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function Logout() {
   const navigate = useNavigate();
 
   useEffect(() => {
     const logoutUser = async () => {
-      const token = localStorage.getItem("token");
-
       try {
-        await fetch("http://localhost:5000/api/logout", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await API.post("/api/logout");
       } catch (error) {
         console.error("Logout Error:", error);
       }
@@ -24,6 +17,9 @@ export default function Logout() {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("user");
+      localStorage.removeItem("name");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("cartCount");
 
       navigate("/login");
     };

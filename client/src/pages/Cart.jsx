@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Trash2 } from "lucide-react";
+import API from "../services/api";
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
@@ -11,9 +11,7 @@ export default function CartPage() {
 
     const fetchCart = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/cart/my", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await API.get("/api/cart/my");
         setCart(res.data);
       } catch (err) {
         console.error(err);
@@ -25,26 +23,22 @@ export default function CartPage() {
   }, [token]);
 
   const handleRemove = async (id) => {
-  try {
-    await axios.delete(`http://localhost:5000/api/cart/remove/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      await API.delete(`/api/cart/remove/${id}`);
 
-    const updatedCart = cart.filter((item) => item.id !== id);
-    setCart(updatedCart);
+      const updatedCart = cart.filter((item) => item.id !== id);
+      setCart(updatedCart);
 
-    // Update count in localStorage & notify CartIcon
-    const newCount = updatedCart.reduce((sum, item) => sum + item.quantity, 0);
-    localStorage.setItem("cartCount", newCount);
-    window.dispatchEvent(new Event("cart-updated"));
+      const newCount = updatedCart.reduce((sum, item) => sum + item.quantity, 0);
+      localStorage.setItem("cartCount", newCount);
+      window.dispatchEvent(new Event("cart-updated"));
 
-    alert("Item removed from cart");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to remove item");
-  }
-};
-
+      alert("Item removed from cart");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to remove item");
+    }
+  };
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cart.reduce((acc, item) => acc + item.quantity * item.product.price, 0);

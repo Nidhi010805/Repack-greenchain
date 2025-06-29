@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import API from "../services/api";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ export default function Signup() {
     name: "",
     email: "",
     password: "",
-    role: "user"
+    role: "user",
   });
 
   const handleChange = (e) => {
@@ -23,23 +24,17 @@ export default function Signup() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await API.post("/api/auth/signup", form);
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (res.status === 201) {
         alert("Signup successful! Please login.");
         navigate("/login");
       } else {
-        alert(data.message || "Signup failed");
+        alert(res.data.message || "Signup failed");
       }
     } catch (err) {
       console.error("Signup error:", err);
-      alert("Something went wrong. Please try again.");
+      alert(err.response?.data?.message || "Something went wrong. Please try again.");
     }
   };
 

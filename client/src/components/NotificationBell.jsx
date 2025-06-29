@@ -2,6 +2,7 @@ import { Bell } from "lucide-react";
 import { useNotifications } from "../context/NotificationContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function NotificationBell() {
   const { notifications, setNotifications } = useNotifications();
@@ -13,11 +14,7 @@ export default function NotificationBell() {
 
   const markAllRead = async () => {
     try {
-      const token = localStorage.getItem("token");
-      await fetch(`http://localhost:5000/api/notifications/mark-all`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await API.patch("/api/notifications/mark-all");
       
       const updated = notifications.map(n => ({ ...n, isRead: true }));
       setNotifications(updated);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function Rewards() {
   const [user, setUser] = useState(null);
@@ -15,29 +16,25 @@ export default function Rewards() {
     fetchData();
   }, []);
 
-  const fetchData = () => {
+  const fetchData = async () => {
     const token = localStorage.getItem("token");
     if (!token) return navigate("/login");
 
-    Promise.all([
-      fetch("http://localhost:5000/api/user/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then(res => res.json()),
-
-      fetch("http://localhost:5000/api/redeem/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then(res => res.json()),
-    ])
-      .then(([userData, historyData]) => {
-        setUser(userData);
-        setHistory(historyData);
-        setLoading(false);
-      })
-      .catch(() => navigate("/login"));
+    try {
+      const [profileRes, historyRes] = await Promise.all([
+        API.get("/api/user/profile"),
+        API.get("/api/redeem/history"),
+      ]);
+      setUser(profileRes.data);
+      setHistory(historyRes.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      navigate("/login");
+    }
   };
 
-  const handleRedeemCashback = () => {
-    const token = localStorage.getItem("token");
+  const handleRedeemCashback = async () => {
     const points = parseInt(pointsToRedeem);
 
     if (!points || points <= 0) {
@@ -52,42 +49,34 @@ export default function Rewards() {
     setRedeeming(true);
     setMessage("");
 
-    fetch("http://localhost:5000/api/redeem/redeem", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+    try {
+      const res = await API.post("/api/redeem/redeem", {
         type: "cashback",
         item: `${points} Points Cashback`,
         pointsUsed: points,
-      }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          setMessage(`❌ ${data.error}`);
-        } else {
-          setMessage(`✅ Successfully Redeemed ₹${data.cashbackAmount} Cashback`);
+      });
 
-          // Instantly update UI without refetch
-          setUser(prev => ({
-            ...prev,
-            greenPoints: prev.greenPoints - points,
-            cashbackEarned: prev.cashbackEarned + data.cashbackAmount,
-          }));
+      setMessage(`✅ Successfully Redeemed ₹${res.data.cashbackAmount} Cashback`);
 
-          setHistory(prev => [
-            { ...data.redeemRecord, id: Date.now() },
-            ...prev,
-          ]);
+      // Instantly update UI without refetch
+      setUser((prev) => ({
+        ...prev,
+        greenPoints: prev.greenPoints - points,
+        cashbackEarned: prev.cashbackEarned + res.data.cashbackAmount,
+      }));
 
-          setPointsToRedeem("");
-        }
-      })
-      .catch(() => setMessage("❌ Redeem failed, try again."))
-      .finally(() => setRedeeming(false));
+      setHistory((prev) => [
+        { ...res.data.redeemRecord, id: Date.now() },
+        ...prev,
+      ]);
+
+      setPointsToRedeem("");
+    } catch (err) {
+      console.error(err);
+      setMessage("❌ Redeem failed, try again.");
+    } finally {
+      setRedeeming(false);
+    }
   };
 
   if (loading || !user) {

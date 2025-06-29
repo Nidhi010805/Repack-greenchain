@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import API from "../services/api";  // ✅ yeh import karo
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,34 +16,27 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await API.post("/api/auth/login", { email, password });
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (res.status === 200) {
+        const data = res.data;
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.role);
-       localStorage.setItem("name", data.user.name);
-       localStorage.setItem("userId", data.user.id);
-localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("name", data.user.name);
+        localStorage.setItem("userId", data.user.id);
 
-
-        // ✅ Navigate based on actual backend role
+        // ✅ Navigate based on role
         if (data.role?.toLowerCase() === "retailer") {
           navigate("/retailer/dashboard");
         } else {
           navigate("/user/dashboard");
         }
       } else {
-        alert(data.message || "Login failed");
+        alert(res.data.message || "Login failed");
       }
     } catch (err) {
       console.error("Login error:", err);
-      alert("Something went wrong. Try again.");
+      alert(err.response?.data?.message || "Something went wrong. Try again.");
     }
   };
 
