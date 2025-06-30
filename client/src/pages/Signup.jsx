@@ -39,20 +39,20 @@ export default function Signup() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-white dark:bg-gray-900 px-6 flex items-center justify-center">
+    <div className="pt-20 pb-16 min-h-screen bg-white dark:bg-teal-100 px-6 flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md p-8 bg-gray-50 dark:bg-gray-800 shadow-md rounded-lg"
+        className="w-full max-w-md p-8 bg-gray-50 dark:bg-white shadow-md rounded-lg"
       >
-        <h2 className="text-2xl font-bold mb-6 text-green-700 dark:text-green-300 text-center">
+        <h2 className="text-2xl font-bold mb-6 text-green-700 dark:text-green-600 text-center">
           Create Your RePack Account
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm mb-1 text-gray-700 dark:text-gray-200">Full Name</label>
+            <label className="block text-sm mb-1 text-gray-800 dark:text-gray-700">Full Name</label>
             <input
               type="text"
               name="name"
@@ -63,7 +63,7 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-sm mb-1 text-gray-700 dark:text-gray-200">Email</label>
+            <label className="block text-sm mb-1 text-gray-800 dark:text-gray-700">Email</label>
             <input
               type="email"
               name="email"
@@ -74,7 +74,7 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-sm mb-1 text-gray-700 dark:text-gray-200">Password</label>
+            <label className="block text-sm mb-1 text-gray-800 dark:text-gray-700">Password</label>
             <input
               type="password"
               name="password"
@@ -85,12 +85,12 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-sm mb-1 text-gray-700 dark:text-gray-200">Sign up as</label>
+            <label className="block text-sm mb-1 text-gray-800 dark:text-gray-700">Sign up as</label>
             <select
               name="role"
               value={form.role}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 focus:outline-none"
+              className="w-full px-2 py-2 rounded-md border border-gray-300 dark:border-gray-600 focus:outline-none"
             >
               <option value="user">User</option>
               <option value="retailer">Retailer</option>
@@ -105,7 +105,7 @@ export default function Signup() {
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-300">
+        <p className="mt-4 text-sm text-center text-gray-700 dark:text-gray-600">
           Already have an account? <a href="/login" className="text-blue-600">Login</a>
         </p>
       </motion.div>

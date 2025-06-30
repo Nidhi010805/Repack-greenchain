@@ -24,6 +24,8 @@ import Likes from "./pages/Likes";
 import InitiateReturn from "./pages/InitiateReturn";
 import Rewards from "./pages/Rewards";
 
+import BotpressChat from "./components/BotPressChat";
+
 // Footer linked pages
 import About from './pages/About';
 import Mission from './pages/Mission';
@@ -52,10 +54,10 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
           {!isAuthenticated && <PublicNavbar />}
 
 
-        <main className="flex-grow mt-20"> {/* Added margin for fixed navbar space */}
+        <main className="flex-grow mt-14"> {/* Added margin for fixed navbar space */}
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/Hero" element={<Hero />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Hero />} />
             
             {/* User Routes */}
             <Route path="/user/dashboard" element={<UserDashboard />} />
@@ -89,6 +91,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <BotpressChat />
         </main>
 
         <Footer />

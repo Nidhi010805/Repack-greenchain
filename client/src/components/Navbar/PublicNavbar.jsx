@@ -7,7 +7,7 @@ export default function PublicNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md fixed top-0 w-full z-50">
+    <nav className="bg-white/50 shadow-md fixed top-0 w-full z-50 backdrop-blur">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
         {/* Logo */}

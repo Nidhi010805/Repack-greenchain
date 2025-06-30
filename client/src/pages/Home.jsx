@@ -12,18 +12,20 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-b from-[#e0f4e8] to-[#ffffff] flex flex-col">
+    <div className="w-full min-h-screen pt-0 bg-gradient-to-b from-[#e0f4e8] to-[#ffffff] flex flex-col">
 
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-green-50 to-blue-50 py-24 px-6 overflow-hidden">
+
+        <div className="absolute top-0 right-0 translate-x-2.5 w-72 h-72 md:w-[400px] md:h-[400px] bg-teal-500/30 rounded-full blur-3xl" />
         {/* Background Image */}
         <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 w-full max-w-4xl opacity-40 pointer-events-none z-0">
-          <img
+          {/*<img
             src="./assets/supply-map.avif"
             alt="Map Illustration"
             className="w-full object-contain"
             style={{ height: "580px" }}
-          />
+          />*/}
         </div>
 
         {/* White Overlay */}
