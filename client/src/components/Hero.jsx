@@ -96,11 +96,11 @@ const Hero = () => {
         whileInView="visible"
         viewport={{ once: true }}
         variants={stagger}
-        className="py-12 bg-white relative px-4 z-10"
+        className="py-12 relative px-4 z-10"
       >
         <div className="absolute top-0 left-0 w-40 h-40 md:w-72 md:h-72 bg-teal-500/30 rounded-full blur-3xl z-0" />
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="backdrop-blur-lg bg-white/30 border border-white/40 rounded-xl p-6 md:p-12 shadow-md">
+          <div className="backdrop-blur-lg bg-white/50 border border-white/40 rounded-xl p-6 md:p-12 shadow-md">
             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-start text-teal-600 mb-10">
               FEATURES
             </motion.h2>
