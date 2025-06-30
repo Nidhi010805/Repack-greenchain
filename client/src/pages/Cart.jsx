@@ -46,7 +46,7 @@ export default function CartPage() {
   if (!token) return <p className="text-center mt-20">Please login to view your cart.</p>;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-24">
+    <div className="max-w-5xl mx-auto px-4 pt-24 pb-10">
       <h1 className="text-3xl font-bold mb-6 text-green-700">🛒 My Cart</h1>
 
       {cart.length === 0 ? (

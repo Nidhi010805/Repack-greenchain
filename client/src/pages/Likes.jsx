@@ -29,7 +29,7 @@ export default function LikesPage() {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-20 pb-20 px-10">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800">❤️ Your Liked Products</h1>
         <p className="text-gray-500 mt-2">All products you marked as favourite</p>

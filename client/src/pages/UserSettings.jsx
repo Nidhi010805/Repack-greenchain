@@ -25,7 +25,7 @@ export default function UserSettings() {
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [fetchProfile]);
 
   const handleProfileUpdate = () => {
     if (!name || !email) return alert("Name and Email are required");

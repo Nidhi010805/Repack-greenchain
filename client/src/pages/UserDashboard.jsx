@@ -35,7 +35,7 @@ export default function UserDashboard() {
     : "https://via.placeholder.com/100?text=Avatar";
 
   return (
-    <div className="max-w-5xl mx-auto mt-24 px-4">
+    <div className="max-w-7xl bg-white px-36 bg p-16 mx-auto mt-18">
       <h1 className="text-3xl font-bold mb-6 text-green-700 flex items-center gap-4">
         <img
           src={profileImg}
@@ -47,14 +47,16 @@ export default function UserDashboard() {
 
       {/* Account Details */}
       <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white shadow rounded-lg p-6">
+
+        {/*<div className="bg-white-200/50 backdrop-blur shadow rounded-lg p-6">*/}
+        <div className="backdrop-blur-lg bg-green-200/30 border border-white/40 rounded-xl p-6 shadow-md">
           <h2 className="text-lg font-semibold mb-4">Account Information</h2>
           <p><span className="font-medium">Email:</span> {user.email}</p>
           <p><span className="font-medium">Mobile:</span> {user.mobile || "Not Provided"}</p>
           <p><span className="font-medium">Green Points:</span> {user.greenPoints}</p>
         </div>
 
-        <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center justify-center">
+        <div className="backdrop-blur-lg bg-green-200/30 border ring-2 ring-green-300 border-white/40 rounded-xl p-6 shadow-md flex flex-col items-center justify-center">
           <h2 className="text-lg font-semibold mb-2">Membership Level</h2>
           <p className="text-2xl font-bold text-green-600">
             {user.greenPoints >= 100
@@ -76,10 +78,10 @@ export default function UserDashboard() {
       </div>
 
       {/* Referral Section */}
-      <div className="bg-white shadow p-6 rounded-lg">
+      <div className="backdrop-blur-lg bg-green-200/30 border border-green-700/40 rounded-xl p-6 shadow-md">
         <h2 className="text-lg font-semibold mb-2">Refer & Earn</h2>
         <p className="text-gray-600 mb-4">Invite your friends and earn 50 Green Points for each signup!</p>
-        <div className="flex items-center">
+        <div className="flex py-3 items-center">
           <input
             type="text"
             value={`https://repack.com/invite/${user.id}`}
@@ -87,7 +89,7 @@ export default function UserDashboard() {
             className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md"
           />
           <button
-            className="px-4 bg-green-600 text-white rounded-r-md hover:bg-green-700"
+            className="px-4 bg-green-600 text-white py-2 rounded-r-md hover:bg-green-700"
             onClick={() => {
               navigator.clipboard.writeText(`https://repack.com/invite/${user.id}`);
               alert("Referral link copied!");
@@ -106,10 +108,10 @@ function Card({ title, desc, onClick }) {
     <motion.div
       whileHover={{ scale: 1.05 }}
       onClick={onClick}
-      className="cursor-pointer bg-white shadow p-6 rounded-lg hover:ring-2 ring-green-300 text-center"
+      className="cursor-pointer backdrop-blur-lg bg-green-400/90 border border-white/40 rounded-xl p-6 shadow-md hover:ring-2 ring-green-700 text-center"
     >
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-gray-500">{desc}</p>
+      <h3 className="text-lg font-semibold mb-2 text-gray-900">{title}</h3>
+      <p className="text-gray-700">{desc}</p>
     </motion.div>
   );
 }

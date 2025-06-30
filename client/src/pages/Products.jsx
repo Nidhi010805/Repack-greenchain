@@ -15,7 +15,7 @@ export default function Products() {
   }, []);
 
   return (
-    <div className="pt-24 px-6 min-h-screen bg-white dark:bg-gray-900">
+    <div className="pt-24 px-6 min-h-screen dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-green-800 dark:text-green-300 mb-6">
           Explore Products
