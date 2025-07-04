@@ -24,6 +24,7 @@ import Likes from "./pages/Likes";
 import InitiateReturn from "./pages/InitiateReturn";
 import Rewards from "./pages/Rewards";
 
+import Inventory from './pages/Inventory';
 import BotpressChat from "./components/BotPressChat";
 
 // Footer linked pages
@@ -71,6 +72,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
 
             {/* Retailer Routes */}
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
+            <Route path="/retailer/inventory" element={<Inventory />} />
 
             {/* Common Pages */}
             <Route path="/admin" element={<AdminPanel />} />
