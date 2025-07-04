@@ -29,7 +29,7 @@ export default function UserNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-md fixed top-0 w-full z-50">
+    <nav className="bg-gray-50 shadow-md fixed top-0 w-full z-50 backdrop-blur">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
         
         {/* Logo */}

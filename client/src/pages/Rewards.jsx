@@ -88,8 +88,8 @@ export default function Rewards() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-24 p-6 space-y-8">
-      <h1 className="text-3xl font-bold text-green-700 text-center">Your Rewards</h1>
+    <div className="max-w-4xl rounded-xl mx-auto bg-green-100/80 my-16 p-6 space-y-8">
+      <h1 className="text-3xl font-bold text-green-600 text-center">Your Rewards</h1>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow flex flex-col items-center text-center">

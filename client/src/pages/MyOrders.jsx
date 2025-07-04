@@ -52,8 +52,8 @@ export default function MyOrders() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto mt-12 px-4">
-      <h2 className="text-3xl font-bold mb-8 text-center animate-fadeIn">My Orders</h2>
+    <div className="max-w-5xl mx-auto mt-12 px-4 mb-16">
+      <h2 className="text-3xl font-bold mb-8 text-center text-green-600 animate-fadeIn">My Orders</h2>
 
       {loading ? (
         <div className="flex justify-center items-center h-48">
