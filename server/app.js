@@ -33,6 +33,10 @@ app.use("/api/redeem", redeemRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/notifications", notificationRoutes);
 
+app.get("/", (req, res) => {
+  res.send("✅ Server is running successfully!");
+});
+
 // ✅ Setup HTTP server for socket
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
