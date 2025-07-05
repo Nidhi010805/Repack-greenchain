@@ -40,12 +40,13 @@ export default function UserNavbar() {
         {/* Desktop Search */}
         <form onSubmit={handleSearch} className="hidden md:flex flex-1 mx-6">
           <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search products or info..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-green-400"
-          />
+  type="text"
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  placeholder="Search products or info..."
+  className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 transition-shadow"
+/>
+
         </form>
 
         {/* Desktop Menu */}
