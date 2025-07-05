@@ -12,4 +12,9 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+export const getTopProducts = async () => {
+  const response = await API.get("/api/product/top-products");
+  return response.data;
+};
+
 export default API;

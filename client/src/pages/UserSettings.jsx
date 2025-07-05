@@ -25,7 +25,7 @@ export default function UserSettings() {
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [fetchProfile]);
 
   const handleProfileUpdate = () => {
     if (!name || !email) return alert("Name and Email are required");
@@ -100,7 +100,7 @@ export default function UserSettings() {
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-24 p-6 bg-white rounded-lg shadow">
+    <div className="max-w-xl mx-auto mt-24 p-6 bg-green-100/80 rounded-lg shadow mb-20">
       <h2 className="text-2xl font-bold mb-6">Account Settings</h2>
 
       <div className="mb-4">
@@ -213,5 +213,6 @@ export default function UserSettings() {
         Delete My Account
       </button>
     </div>
+    
   );
 }

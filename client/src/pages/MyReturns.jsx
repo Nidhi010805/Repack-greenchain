@@ -21,8 +21,8 @@ export default function MyReturns() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto mt-24 p-6">
-      <h1 className="text-2xl font-bold mb-6 text-green-700">Your Return History</h1>
+    <div className="max-w-4xl mx-auto mt-16 p-6 mb-16">
+      <h1 className="text-2xl font-bold mb-6 text-green-600">Your Return History</h1>
 
       {loading ? (
         <p>Loading...</p>
@@ -31,7 +31,7 @@ export default function MyReturns() {
       ) : (
         <ul className="space-y-3">
           {returns.map(r => (
-            <li key={r.id} className="bg-white shadow rounded p-4 flex justify-between items-center">
+            <li key={r.id} className="bg-green-100/80 shadow rounded p-4 flex justify-between items-center">
               <div>
                 <p className="font-medium">{r.product.name} (x{r.quantity})</p>
                 <p className="text-sm text-gray-500">Material: {r.material} | Size: {r.size}</p>

@@ -107,7 +107,7 @@ export default function RetailerDashboard() {
       : "🌿 Bronze Partner";
 
   return (
-    <div className="max-w-6xl mx-auto mt-24 px-4">
+    <div className="max-w-7xl mx-auto mt-0 bg-green-300/30 py-10 px-24">
       {/* Profile Section */}
       <div className="flex flex-col sm:flex-row items-center justify-between mb-8 bg-white shadow p-6 rounded-lg">
         <div className="flex items-center gap-4">
@@ -177,7 +177,7 @@ export default function RetailerDashboard() {
       </div>
 
       {/* Return List */}
-      <div className="bg-white shadow p-6 rounded-lg">
+      <div className="bg-green-500/40 shadow p-6 rounded-lg">
         <h2 className="text-lg font-semibold mb-4">
           {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Packaging
           Returns
@@ -192,7 +192,7 @@ export default function RetailerDashboard() {
             {returns.map((ret) => (
               <li
                 key={ret.id}
-                className="border p-4 rounded flex justify-between items-center flex-wrap"
+                className="border p-4 bg-white rounded flex justify-between items-center flex-wrap"
               >
                 <div className="mb-2">
                   <p className="font-medium">User: {ret.user?.name}</p>

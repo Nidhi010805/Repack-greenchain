@@ -118,7 +118,7 @@ export default function ProductCard({ product, showDelete }) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handleAddToCart}
-          className="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1 rounded flex items-center gap-1 transition"
+          className="ring-2 ring-green-600 hover:bg-green-600 hover:text-white text-green-700 text-sm px-3 py-1 rounded flex items-center gap-1 transition"
         >
           <ShoppingCart size={16} /> Add
         </motion.button>
@@ -149,7 +149,7 @@ export default function ProductCard({ product, showDelete }) {
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={handleBuyNow}
-        className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-sm px-4 py-1 rounded self-end transition"
+        className="bg-gradient-to-r from-green-400 to-green-700 hover:from-green-700 hover:to-green-400 text-white text-sm px-4 py-1 rounded self-end transition"
       >
         Buy Now
       </motion.button>

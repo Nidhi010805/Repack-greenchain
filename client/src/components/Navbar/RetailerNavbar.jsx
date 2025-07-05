@@ -14,12 +14,12 @@ export default function RetailerNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-md fixed top-0 w-full z-50">
+    <nav className="bg-white/50 shadow-md fixed top-0 w-full z-50 backdrop-blur">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold tracking-tight text-green-700">
-          GreenChain
+        <Link to="/" className="text-2xl font-bold tracking-tight text-green-600">
+          Eco<span className="text-teal-600">Loop</span>
         </Link>
 
         {/* Desktop Menu */}

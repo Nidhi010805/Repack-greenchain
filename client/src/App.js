@@ -24,6 +24,7 @@ import Likes from "./pages/Likes";
 import InitiateReturn from "./pages/InitiateReturn";
 import Rewards from "./pages/Rewards";
 
+import Inventory from './pages/Inventory';
 import BotpressChat from "./components/BotPressChat";
 
 // Footer linked pages
@@ -35,6 +36,7 @@ import Help from './pages/Help';
 import Faq from './pages/Faq';
 import Shipping from './pages/Shipping';
 import Hero from './components/Hero';
+import ReturnRefund from './pages/ReturnRefund';
 
 function App() {
  const token = localStorage.getItem("token");
@@ -71,6 +73,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
 
             {/* Retailer Routes */}
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
+            <Route path="/retailer/inventory" element={<Inventory />} />
 
             {/* Common Pages */}
             <Route path="/admin" element={<AdminPanel />} />
@@ -88,6 +91,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
             <Route path="/help" element={<Help />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/shipping" element={<Shipping />} />
+            <Route path="/returns" element={<ReturnRefund/>} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

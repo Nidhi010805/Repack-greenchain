@@ -39,7 +39,33 @@ export default function OurMission() {
           transition={{ delay: 0.3 }}
           className="text-center text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed"
         >
-          We aim to redefine sustainable retail by enabling easy packaging returns and rewarding customers for responsible actions — building a greener, circular economy together.
+          {/*We aim to redefine sustainable retail by enabling easy packaging returns and rewarding customers for responsible actions — building a greener, circular economy together.*/}
+
+          <div className="text-gray-600 max-w-6xl mx-auto px-4 pt-12 pb-16">
+          {/* Intro */}
+          <p className="text-center text-lg max-w-2xl mx-auto leading-relaxed mb-12">
+            At <span className="font-semibold text-green-700">EcoLoop</span>, our mission is to build a greener, smarter future for retail by rethinking the way we handle packaging and inventory. We believe sustainability should be simple — both for shoppers and retailers.
+          </p>
+
+          {/* Grid for Users and Retailers */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* For Users */}
+            <div className="bg-green-50 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+              <h3 className="text-xl font-semibold text-green-700 mb-2">♻️ For Users</h3>
+              <p className="leading-relaxed">
+                We empower everyday customers to become eco-champions by returning packaging waste easily and earning <span className="font-medium text-green-600">Green Points</span>. These points can be redeemed for cashback or rewards — turning eco-action into real impact.
+              </p>
+            </div>
+
+            {/* For Retailers */}
+            <div className="bg-teal-50 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+              <h3 className="text-xl font-semibold text-teal-700 mb-2">🛒 For Retailers</h3>
+              <p className="leading-relaxed">
+                We enable retailers to make <span className="font-medium text-teal-600">data-driven stocking decisions</span> through inventory forecasting tools that highlight top-selling products — ensuring products are always in stock, minimizing waste, and avoiding delivery delays.
+              </p>
+            </div>
+          </div>
+        </div>
         </motion.p>
       </motion.div>
     </section>

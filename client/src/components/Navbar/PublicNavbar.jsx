@@ -11,8 +11,8 @@ export default function PublicNavbar() {
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold tracking-tight text-green-700">
-          RePack<span className="text-blue-600">Green Chain</span>
+        <Link to="/" className="text-2xl font-bold tracking-tight text-green-600">
+          Eco<span className="text-teal-600">Loop</span>
         </Link>
 
         {/* Desktop Menu */}
