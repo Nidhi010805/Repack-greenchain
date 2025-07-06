@@ -29,9 +29,9 @@ export default function UserDashboard() {
       </div>
     );
   }
-
+const BASE_URL = API.defaults.baseURL;
   const profileImg = user.profilePhoto
-    ? `http://localhost:5000/uploads/${user.profilePhoto}`
+    ? `${BASE_URL}/uploads/${user.profilePhoto}`
     : "https://via.placeholder.com/100?text=Avatar";
 
   return (
