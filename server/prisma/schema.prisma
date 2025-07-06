@@ -152,3 +152,9 @@ model Notification {
 
   user User @relation(fields: [userId], references: [id])
 }
+
+model BlacklistedToken {
+  id        Int      @id @default(autoincrement())
+  token     String
+  createdAt DateTime @default(now())
+}

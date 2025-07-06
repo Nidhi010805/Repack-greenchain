@@ -45,7 +45,6 @@ export const login = async (req, res) => {
 
     const token = generateToken(user);
 
-    // ✅ Return role in response
     res.status(200).json({
       token,
       role: user.role,
@@ -57,5 +56,22 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Login failed", error: error.message });
+  }
+};
+
+export const logout = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(400).json({ message: "Token missing" });
+  }
+
+  try {
+    await prisma.blacklistedToken.create({
+      data: { token },
+    });
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    res.status(500).json({ message: "Logout failed", error: error.message });
   }
 };

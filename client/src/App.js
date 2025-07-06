@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import ProductList from "./pages/ProductList";
 import Signup from './pages/Signup';
 import NotFound from './pages/NotFound';
+import Logout from "./pages/Logout";
 import Cart from './pages/Cart';
 import MyReturns from './pages/MyReturns';
 import UserSettings from "./pages/UserSettings";
@@ -66,6 +67,7 @@ const isAuthenticated = token && token !== "undefined" && token !== "";
             <Route path="/user/settings" element={<UserSettings />} />
             <Route path="/my-orders" element={<MyOrders />} />
             <Route path="/likes" element={<Likes />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="/my-returns" element={<MyReturns />} />
             <Route path="/initiate-return" element={<InitiateReturn />} />
             <Route path="/my-rewards" element={<Rewards />} />

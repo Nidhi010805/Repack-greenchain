@@ -4,6 +4,7 @@ import CartIcon from "../CartIcon";
 import LikesIcon from "../LikesIcon";
 import NotificationBell from "../NotificationBell";
 import { useState } from "react";
+import API from "../../services/api";
 
 
 export default function UserNavbar() {
@@ -23,10 +24,30 @@ export default function UserNavbar() {
     }
   };
 
-  const handleLogout = () => {
+
+
+const handleLogout = async () => {
+  const token = localStorage.getItem("token");
+
+  try {
+    if (token) {
+      const res = await API.post("/api/auth/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert(res.data.message);  // "Logout successful" popup yaha aayega
+    }
+  } catch (error) {
+    alert("Logout failed");
+    console.error("Logout Error:", error?.response?.data || error.message);
+  } finally {
     localStorage.clear();
-    navigate("/login");
-  };
+    navigate("/");
+  }
+};
+
+
 
   return (
     <nav className="bg-gray-50 shadow-md fixed top-0 w-full z-50 backdrop-blur">

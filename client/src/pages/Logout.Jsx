@@ -7,21 +7,24 @@ export default function Logout() {
 
   useEffect(() => {
     const logoutUser = async () => {
+      const token = localStorage.getItem("token");
+
       try {
-        await API.post("/api/logout");
+        // Send logout request with token in headers
+        if (token) {
+          await API.post("/api/auth/logout", {}, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        }
       } catch (error) {
-        console.error("Logout Error:", error);
+        console.error("Logout Error:", error?.response?.data || error.message);
+      } finally {
+        // Frontend cleanup
+        localStorage.clear();
+        navigate("/l");
       }
-
-      // Frontend cleanup
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("user");
-      localStorage.removeItem("name");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("cartCount");
-
-      navigate("/login");
     };
 
     logoutUser();
@@ -29,7 +32,7 @@ export default function Logout() {
 
   return (
     <div className="h-screen flex justify-center items-center">
-      <h2 className="text-xl font-semibold">Logging you out...</h2>
+      <h2 className="text-xl font-semibold animate-pulse">Logging you out...</h2>
     </div>
   );
 }

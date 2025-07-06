@@ -24,8 +24,8 @@ export default function UserDashboard() {
 
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <p className="text-lg text-gray-600">Loading your profile...</p>
+      <div className="h-screen flex items-center justify-center px-4">
+        <p className="text-lg text-gray-600 text-center">Loading your profile...</p>
       </div>
     );
   }
@@ -35,8 +35,8 @@ export default function UserDashboard() {
     : "https://via.placeholder.com/100?text=Avatar";
 
   return (
-    <div className="max-w-7xl bg-white px-36 bg p-16 mx-auto mt-18">
-      <h1 className="text-3xl font-bold mb-6 text-green-700 flex items-center gap-4">
+    <div className="max-w-7xl bg-white px-4 sm:px-6 md:px-12 lg:px-24 xl:px-36 py-8 mx-auto mt-10">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-green-700 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
         <img
           src={profileImg}
           alt="Profile"
@@ -46,9 +46,7 @@ export default function UserDashboard() {
       </h1>
 
       {/* Account Details */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
-
-        {/*<div className="bg-white-200/50 backdrop-blur shadow rounded-lg p-6">*/}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="backdrop-blur-lg bg-green-200/30 border border-white/40 rounded-xl p-6 shadow-md">
           <h2 className="text-lg font-semibold mb-4">Account Information</h2>
           <p><span className="font-medium">Email:</span> {user.email}</p>
@@ -65,12 +63,12 @@ export default function UserDashboard() {
               ? "🌱 Silver Member"
               : "🌿 Bronze Member"}
           </p>
-          <p className="text-sm text-gray-500 mt-2">Contribute more to unlock badges</p>
+          <p className="text-sm text-gray-500 mt-2 text-center">Contribute more to unlock badges</p>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         <Card title="My Orders" desc={`${user.totalOrders || 0} orders placed`} onClick={() => navigate("/my-orders")} />
         <Card title="Returns" desc={`${user.totalReturns || 0} returns processed`} onClick={() => navigate("/my-returns")} />
         <Card title="Rewards" desc={`${user.greenPoints} points, ₹${user.cashbackEarned} cashback`} onClick={() => navigate("/my-rewards")} />
@@ -81,15 +79,15 @@ export default function UserDashboard() {
       <div className="backdrop-blur-lg bg-green-200/30 border border-green-700/40 rounded-xl p-6 shadow-md">
         <h2 className="text-lg font-semibold mb-2">Refer & Earn</h2>
         <p className="text-gray-600 mb-4">Invite your friends and earn 50 Green Points for each signup!</p>
-        <div className="flex py-3 items-center">
+        <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
           <input
             type="text"
             value={`https://repack.com/invite/${user.id}`}
             readOnly
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md"
+            className="w-full sm:flex-1 px-4 py-2 border border-gray-300 rounded-md sm:rounded-l-md"
           />
           <button
-            className="px-4 bg-green-600 text-white py-2 rounded-r-md hover:bg-green-700"
+            className="w-full sm:w-auto px-4 bg-green-600 text-white py-2 rounded-md sm:rounded-r-md hover:bg-green-700"
             onClick={() => {
               navigator.clipboard.writeText(`https://repack.com/invite/${user.id}`);
               alert("Referral link copied!");
@@ -108,7 +106,7 @@ function Card({ title, desc, onClick }) {
     <motion.div
       whileHover={{ scale: 1.05 }}
       onClick={onClick}
-      className="cursor-pointer backdrop-blur-lg bg-green-400/90 border border-white/40 rounded-xl p-6 shadow-md hover:ring-2 ring-green-700 text-center"
+      className="cursor-pointer w-full backdrop-blur-lg bg-green-400/90 border border-white/40 rounded-xl p-6 shadow-md hover:ring-2 ring-green-700 text-center flex flex-col justify-center h-full"
     >
       <h3 className="text-lg font-semibold mb-2 text-gray-900">{title}</h3>
       <p className="text-gray-700">{desc}</p>
