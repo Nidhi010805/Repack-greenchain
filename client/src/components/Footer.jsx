@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         {/* About */}
         <div>
-          <h3 className="text-lg font-semibold text-green-700 mb-4">About RePack</h3>
+          <h3 className="text-lg font-semibold text-green-700 mb-4">About Ecoloop</h3>
           <ul className="space-y-2 text-sm">
             <li><Link to="/about" className="hover:text-green-600">Who We Are</Link></li>
             <li><Link to="/mission" className="hover:text-green-600">Our Mission</Link></li>

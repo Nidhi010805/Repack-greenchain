@@ -24,7 +24,7 @@ export default function UserDashboard() {
 
   if (!user) {
     return (
-      <div className="h-screen flex items-center justify-center px-4">
+      <div className="h-screen flex items-center justify-center px-4 bg-gradient-to-b from-[#e0f4e8] to-[#ffffff]">
         <p className="text-lg text-gray-600 text-center">Loading your profile...</p>
       </div>
     );
@@ -35,28 +35,28 @@ export default function UserDashboard() {
     : "https://via.placeholder.com/100?text=Avatar";
 
   return (
-    <div className="max-w-7xl bg-white px-4 sm:px-6 md:px-12 lg:px-24 xl:px-36 py-8 mx-auto mt-10">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-green-700 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+    <div className="min-h-screen bg-gradient-to-b from-[#e0f4e8] to-[#ffffff] px-4 sm:px-6 md:px-12 lg:px-24 xl:px-36 py-8 mx-auto">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-green-800 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
         <img
           src={profileImg}
           alt="Profile"
-          className="w-16 h-16 rounded-full border object-cover"
+          className="w-16 h-16 rounded-full border object-cover shadow-md"
         />
         Welcome, {user.name}
       </h1>
 
       {/* Account Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="backdrop-blur-lg bg-green-200/30 border border-white/40 rounded-xl p-6 shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Account Information</h2>
+        <div className="backdrop-blur-lg bg-white/80 border border-gray-200 rounded-xl p-6 shadow-xl">
+          <h2 className="text-lg font-semibold mb-4 text-green-700">Account Information</h2>
           <p><span className="font-medium">Email:</span> {user.email}</p>
           <p><span className="font-medium">Mobile:</span> {user.mobile || "Not Provided"}</p>
           <p><span className="font-medium">Green Points:</span> {user.greenPoints}</p>
         </div>
 
-        <div className="backdrop-blur-lg bg-green-200/30 border ring-2 ring-green-300 border-white/40 rounded-xl p-6 shadow-md flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold mb-2">Membership Level</h2>
-          <p className="text-2xl font-bold text-green-600">
+        <div className="backdrop-blur-lg bg-white/80 border border-gray-200 rounded-xl p-6 shadow-xl flex flex-col items-center justify-center">
+          <h2 className="text-lg font-semibold mb-2 text-green-700">Membership Level</h2>
+          <p className="text-2xl font-bold text-green-700">
             {user.greenPoints >= 100
               ? "🌍 Green Warrior"
               : user.greenPoints >= 50
@@ -76,8 +76,8 @@ export default function UserDashboard() {
       </div>
 
       {/* Referral Section */}
-      <div className="backdrop-blur-lg bg-green-200/30 border border-green-700/40 rounded-xl p-6 shadow-md">
-        <h2 className="text-lg font-semibold mb-2">Refer & Earn</h2>
+      <div className="backdrop-blur-lg bg-white/80 border border-green-200 rounded-xl p-6 shadow-xl">
+        <h2 className="text-lg font-semibold mb-2 text-green-700">Refer & Earn</h2>
         <p className="text-gray-600 mb-4">Invite your friends and earn 50 Green Points for each signup!</p>
         <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
           <input
@@ -106,9 +106,9 @@ function Card({ title, desc, onClick }) {
     <motion.div
       whileHover={{ scale: 1.05 }}
       onClick={onClick}
-      className="cursor-pointer w-full backdrop-blur-lg bg-green-400/90 border border-white/40 rounded-xl p-6 shadow-md hover:ring-2 ring-green-700 text-center flex flex-col justify-center h-full"
+      className="cursor-pointer w-full backdrop-blur-lg bg-white/80 border border-gray-200 rounded-xl p-6 shadow-xl hover:ring-2 ring-green-600 text-center flex flex-col justify-center h-full"
     >
-      <h3 className="text-lg font-semibold mb-2 text-gray-900">{title}</h3>
+      <h3 className="text-lg font-semibold mb-2 text-green-800">{title}</h3>
       <p className="text-gray-700">{desc}</p>
     </motion.div>
   );
