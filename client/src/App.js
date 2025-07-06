@@ -16,7 +16,7 @@ import Login from './pages/Login';
 import ProductList from "./pages/ProductList";
 import Signup from './pages/Signup';
 import NotFound from './pages/NotFound';
-import Logout from "./pages/Logout";
+import Logout from './pages/Logout';
 import Cart from './pages/Cart';
 import MyReturns from './pages/MyReturns';
 import UserSettings from "./pages/UserSettings";
