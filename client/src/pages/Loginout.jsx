@@ -7,23 +7,13 @@ export default function Logout() {
 
   useEffect(() => {
     const logoutUser = async () => {
-      const token = localStorage.getItem("token");
-
       try {
-        // Send logout request with token in headers
-        if (token) {
-          await API.post("/api/auth/logout", {}, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-        }
+        await API.post("/api/auth/logout");  
       } catch (error) {
         console.error("Logout Error:", error?.response?.data || error.message);
       } finally {
-        // Frontend cleanup
         localStorage.clear();
-        navigate("/l");
+        navigate("/");  
       }
     };
 

@@ -10,7 +10,7 @@ export default function RetailerNavbar() {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
