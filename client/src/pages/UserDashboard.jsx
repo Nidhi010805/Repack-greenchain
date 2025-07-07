@@ -30,18 +30,20 @@ export default function UserDashboard() {
     );
   }
 const BASE_URL = API.defaults.baseURL;
-  const profileImg = user.profilePhoto
-    ? `${BASE_URL}/uploads/${user.profilePhoto}`
-    : "https://via.placeholder.com/100?text=Avatar";
+const defaultAvatar = "https://placehold.co/100x100?text=Avatar";
+const profileImg = user?.profilePhoto
+  ? `${BASE_URL}/uploads/${user.profilePhoto}`
+  : defaultAvatar;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#e0f4e8] to-[#ffffff] px-4 sm:px-6 md:px-12 lg:px-24 xl:px-36 py-8 mx-auto">
       <h1 className="text-2xl md:text-3xl font-bold mb-6 text-green-800 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
         <img
-          src={profileImg}
-          alt="Profile"
-          className="w-16 h-16 rounded-full border object-cover shadow-md"
-        />
+  src={profileImg}
+  alt="Profile"
+  className="w-16 h-16 rounded-full border object-cover shadow-md"
+/>
+
         Welcome, {user.name}
       </h1>
 
