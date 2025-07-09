@@ -17,6 +17,8 @@ export default function Login() {
 
     try {
       const res = await API.post("/api/auth/login", { email, password });
+      console.log("Calling:", process.env.REACT_APP_API_URL);
+
 
       if (res.status === 200) {
         const data = res.data;
