@@ -29,11 +29,12 @@ export default function UserDashboard() {
       </div>
     );
   }
-const BASE_URL = API.defaults.baseURL;
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 const defaultAvatar = "https://placehold.co/100x100?text=Avatar";
 const profileImg = user?.profilePhoto
   ? `${BASE_URL}/uploads/${user.profilePhoto}`
   : defaultAvatar;
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#e0f4e8] to-[#ffffff] px-4 sm:px-6 md:px-12 lg:px-24 xl:px-36 py-8 mx-auto">

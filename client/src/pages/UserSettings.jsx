@@ -11,6 +11,8 @@ export default function UserSettings() {
   const [photo, setPhoto] = useState(null);
 
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 
   const fetchProfile = () => {
     API.get("/api/user/profile")
@@ -173,20 +175,21 @@ export default function UserSettings() {
       <h3 className="text-lg font-semibold mb-4">Profile Photo</h3>
 
       {user.profilePhoto && (
-        <div className="mb-4 flex items-center gap-4">
-          <img
-            src={`http://localhost:5000/uploads/${user.profilePhoto}`}
-            alt="Profile"
-            className="w-16 h-16 rounded-full border"
-          />
-          <button
-            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-            onClick={handleRemovePhoto}
-          >
-            Remove Photo
-          </button>
-        </div>
-      )}
+  <div className="mb-4 flex items-center gap-4">
+    <img
+      src={`${BASE_URL}/uploads/${user.profilePhoto}`}
+      alt="Profile"
+      className="w-16 h-16 rounded-full border"
+    />
+    <button
+      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+      onClick={handleRemovePhoto}
+    >
+      Remove Photo
+    </button>
+  </div>
+)}
+
 
       <input
         type="file"
