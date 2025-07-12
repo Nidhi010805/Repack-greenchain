@@ -14,7 +14,7 @@ import returnPackagingRoutes from "./routes/returnPackagingRoutes.js";
 import redeemRoutes from "./routes/redeemRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
-console.log("🔥 App.js server reloaded");
+
 
 
 dotenv.config();
@@ -47,13 +47,15 @@ app.use("/api/redeem", redeemRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/notifications", notificationRoutes);
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.get("/", (req, res) => {
   res.send("✅ Server is running successfully!");
 });
 
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
-});
+
 
 // ✅ Setup HTTP server for socket
 const server = http.createServer(app);
