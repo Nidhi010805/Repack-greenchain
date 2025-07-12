@@ -49,6 +49,10 @@ app.get("/", (req, res) => {
   res.send("✅ Server is running successfully!");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 // ✅ Setup HTTP server for socket
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
