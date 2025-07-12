@@ -14,6 +14,8 @@ import returnPackagingRoutes from "./routes/returnPackagingRoutes.js";
 import redeemRoutes from "./routes/redeemRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+console.log("🔥 App.js server reloaded");
+
 
 dotenv.config();
 
